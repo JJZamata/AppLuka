@@ -1,9 +1,13 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-
+    //Procesamiento de anotaciones en Kotlin
+    id("com.google.devtools.ksp")
+    //inyeccion de dependencias
+    id("dagger.hilt.android.plugin")
     // Agregar el plugin de Google Services
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -24,6 +28,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Este bloque se puede dejar vacío o personalizar según sea necesario
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -64,6 +71,9 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.common.ktx)
+    implementation(libs.androidx.material3.android)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.config.ktx)
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
@@ -78,9 +88,22 @@ dependencies {
 
     // Agregar Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-perf")
+    implementation("com.google.firebase:firebase-config")
+    implementation("com.google.firebase:firebase-messaging")
 
     // Agregar Firebase Analytics (u otros servicios de Firebase que desees)
     implementation("com.google.firebase:firebase-analytics")
 
     // Dependencias adicionales de Firebase que puedas necesitar
+
+    //inyeccion de dependencias - hilt
+    implementation("com.google.dagger:hilt-android:2.47")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    //- compilador
+    ksp("com.google.dagger:hilt-compiler:2.47")
 }

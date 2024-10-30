@@ -18,26 +18,4 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CustomTopBar(navController: NavController, name: String, onMenuClick: () -> Unit) {
-    TopAppBar(
-        modifier = Modifier
-            .shadow(elevation = 5.dp)
-            .background(Color.Gray),
-        navigationIcon = {
-            IconButton(onClick = onMenuClick) {
-                Icon(imageVector = Icons.Rounded.Menu, contentDescription = "Menu")
-            }
-        },
-        title = { Text(text = "Hola $name") },
-        actions = {
-            IconButton(onClick = { /* TODO: Search action */ }) {
-                Icon(imageVector = Icons.Default.Notifications, contentDescription = "Search")
-            }
-            IconButton(onClick = { navController.navigate(AppScreens.ProfileScreen.route) }) {
-                Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Go to User Profile")
-            }
-        },
-    )
-}
+

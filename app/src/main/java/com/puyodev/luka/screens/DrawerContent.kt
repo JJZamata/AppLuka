@@ -44,7 +44,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DrawerContent(navController: NavController) {
+fun DrawerContent() {
     val items = listOf(
         NavigationItems(
             title = "Inicio",
@@ -89,7 +89,7 @@ fun DrawerContent(navController: NavController) {
             selected = index == selectedItemIndex,
             onClick = {
                 selectedItemIndex = index
-
+/*
                 // Lógica de navegación basada en el título del ítem seleccionado
                 when (item.title) {
                     "Home" -> navController.navigate("home")
@@ -98,7 +98,7 @@ fun DrawerContent(navController: NavController) {
                     "Settings" -> navController.navigate("settings")
                     "Historial" -> navController.navigate(AppScreens.HistoryScreen.route)
                 }
-
+*/
                 scope.launch {
                     drawerState.close()
                 }

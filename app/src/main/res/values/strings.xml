@@ -1,3 +1,47 @@
 <resources>
+    <!-- Common -->
     <string name="app_name">Luka</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="email">Correo</string>
+    <string name="password">Contraseña</string>
+    <string name="repeat_password">Repetir contraseña</string>
+    <string name="generic_error">Something wrong happened. Please try again.</string>
+    <string name="email_error">Por favor ingresar un correo válido.</string>
+    <string name="username_error">Incorrecto. Solo se permite letras y un rango de cantidad de caracteres de 5 a 35 .</string>
+    <string name="cancel">Cancel</string>
+    <string name="try_again">Try again</string>
+    <string name="ok">OK</string>
+
+    <!-- LoginScreen -->
+    <string name="sign_in">Sign in</string>
+    <string name="login_details">Ingrese sus credenciales</string>
+    <string name="forgot_password">¿Te olvidastes de tu contraseña? Click para enviar un correo de recuperación</string>
+    <string name="recovery_email_sent">Check your inbox for the recovery email.</string>
+    <string name="empty_password_error">Password cannot be empty.</string>
+    <string name="start_to_create_account">Click para crear una nueva cuenta.</string>
+
+    <!-- SignUpScreen -->
+    <string name="create_account">Crear cuenta</string>
+    <string name="password_error">Tu contraseña debería al menos tener 6 caracteres y incluido 1 digito, 1 letra minúscula y 1 letra mayúscula.</string>
+    <string name="password_match_error">Ambas contraseñas no coinciden.</string>
+    <string name="start_to_login_account">Click para iniciar sesión.</string>
+
+
+    <!-- SettingsScreen -->
+    <string name="settings">Settings</string>
+    <string name="sign_out">Cerrar sesión</string>
+    <string name="delete_my_account">Eliminar mi cuenta</string>
+
+    <!-- Dialogs -->
+    <string name="sign_out_title">¿Vas a CERRAR SESIÓN?</string>
+    <string name="sign_out_description">Tendrás que iniciar sesión otra vez para ver tus configuraciones.</string>
+    <string name="delete_account_title">¿Vas a ELIMINAR TU CUENTA?</string>
+    <string name="delete_account_description">Perderás todo tu crédito y tu cuenta será eliminada. Esta acción es irreversible.</string>
+
+    <!-- FCM -->
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="request_notification_permission">Request permission</string>
+    <string name="notification_permission_title">Notification permission</string>
+    <string name="notification_permission_description">The notification permission is important for this app. Please grant the permission.</string>
+    <string name="notification_permission_settings">The notification permission is important for this app. Please navigate to your device settings and enable notifications for Luka.</string>
 </resources>

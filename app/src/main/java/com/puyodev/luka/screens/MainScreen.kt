@@ -80,7 +80,7 @@ import androidx.navigation.compose.rememberNavController
 import com.puyodev.luka.R
 import com.puyodev.luka.navigation.AppScreens
 import kotlinx.coroutines.launch
-
+/*
 @Composable
 fun AppContent(navController: NavController) {
     var valor by remember { mutableIntStateOf(1) } // Estado del contador
@@ -268,4 +268,4 @@ fun DrawerHeader() {
             //color = MaterialTheme.colorScheme.onPrimary,
         )
     }
-}
+}*/

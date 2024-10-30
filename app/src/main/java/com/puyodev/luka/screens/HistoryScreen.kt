@@ -34,7 +34,7 @@ val historial = listOf(
 fun HistorialView(navController: NavController) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-
+/*
     Scaffold(
         topBar = {
             CustomTopBar(navController = navController, name = "Juan", onMenuClick = {
@@ -54,6 +54,7 @@ fun HistorialView(navController: NavController) {
             }
         }
     }
+    */
 }
 
 @Composable
