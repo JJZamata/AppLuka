@@ -30,11 +30,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.puyodev.luka.R
 import com.puyodev.luka.common.composable.*
 import com.puyodev.luka.R.drawable as AppIcon
 import com.puyodev.luka.R.string as AppText
 import com.puyodev.luka.common.ext.card
+import com.puyodev.luka.model.User
 import com.puyodev.luka.ui.theme.LukaTheme
 
 @Composable
@@ -43,8 +45,14 @@ fun ProfileScreen(
     openScreen: (String) -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ){
+    // Observa un único objeto User en lugar de una lista
+    val user by viewModel.user.collectAsStateWithLifecycle(initialValue = User())
+    val userEmail = viewModel.userEmail // Obtén el email del usuario autenticado
+
     ProfileScreenContent(
         //uiState = uiState,
+        user = user,
+        userEmail = userEmail,
         onSignOutClick = { viewModel.onSignOutClick(restartApp) },
         onDeleteMyAccountClick = { viewModel.onDeleteMyAccountClick(restartApp) }
     )
@@ -55,7 +63,9 @@ fun ProfileScreen(
 @Composable
 fun ProfileScreenContent(
     modifier: Modifier = Modifier,
+    user: User,
     //uiState: SettingsUiState,
+    userEmail: String, // Agregamos el email como parámetro
     onSignOutClick: () -> Unit,
     onDeleteMyAccountClick: () -> Unit
 ) {
@@ -82,7 +92,7 @@ fun ProfileScreenContent(
                     .padding(20.dp)
                     .clip(CircleShape),
             )
-            Text(text = "PuyoDEV")
+            Text(text = user.username)
         }
         Column {
             SignOutCard { onSignOutClick() }
@@ -92,31 +102,27 @@ fun ProfileScreenContent(
         Column {
             Spacer(modifier = Modifier.height(16.dp))
             TextField(
-                value = "name",
-                onValueChange = { "name" },
+                value = user.username,
+                onValueChange = {},
                 label = { Text("Nombre Completo") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                enabled = false
             )
             Spacer(modifier = Modifier.height(16.dp))
             TextField(
-                value = "jeefry753@gmail.com",
-                onValueChange = { "name" },
+                value = userEmail,
+                onValueChange = {},
                 label = { Text("Email") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                enabled = false // Campo de solo lectura
             )
             Spacer(modifier = Modifier.height(16.dp))
             TextField(
-                value = "902887796",
-                onValueChange = { "name" },
-                label = { Text("Número de celular") },
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            TextField(
-                value = "- - - - - - - -",
-                onValueChange = { "name" },
+                value = "••••••••", // Representación segura de la contraseña
+                onValueChange = {},
                 label = { Text("Contraseña") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                enabled = false // Campo de solo lectura
             )
             Spacer(modifier = Modifier.height(16.dp))
             // Botón para enviar el formulario
@@ -186,11 +192,13 @@ private fun DeleteMyAccountCard(deleteMyAccount: () -> Unit) {
 
 @Preview
 @Composable
-fun PreviewProfile(){
+fun PreviewProfile() {
     LukaTheme {
         ProfileScreenContent(
+            user = User(username = "Nombre de Usuario de Ejemplo"), // Usa un usuario de prueba
             onSignOutClick = { },
             onDeleteMyAccountClick = { },
-        )
+            userEmail =  "dfsdfs" ,
+            )
     }
 }

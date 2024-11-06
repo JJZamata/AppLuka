@@ -13,18 +13,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.puyodev.luka.common.snackbar.SnackbarManager
 //import com.puyodev.luka.screens.AppContent
 import com.puyodev.luka.screens.pay.PayScreen
 import com.puyodev.luka.screens.profile.ProfileScreen
 //import com.example.makeitso.screens.edit_task.EditTaskScreen
 import com.puyodev.luka.screens.login.LoginScreen
+import com.puyodev.luka.screens.operation.OperationsScreen
 //import com.puyodev.luka.screens.settings.SettingsScreen
 import com.puyodev.luka.screens.sign_up.SignUpScreen
 import com.puyodev.luka.screens.splash.SplashScreen
+import com.puyodev.luka.screens.ticket.TicketScreen
 //import com.example.makeitso.screens.tasks.TasksScreen
 import com.puyodev.luka.ui.theme.LukaTheme
 //import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -120,6 +124,25 @@ fun NavGraphBuilder.lukaGraph(appState: LukaAppState) {
         LoginScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
     }
 
+    composable(
+        route = "$TICKET_SCREEN/{valor}/{direccion}",
+        arguments = listOf(
+            navArgument("valor") { type = NavType.IntType },
+            navArgument("direccion") { type = NavType.StringType }
+        )
+    ) { backStackEntry ->
+        // Obtén los argumentos pasados
+        val valor = backStackEntry.arguments?.getInt("valor")
+        val direccion = backStackEntry.arguments?.getString("direccion")
+
+        // Pasa los argumentos a la TicketScreen
+        TicketScreen(
+            valor = valor,
+            direccion = direccion,
+            openScreen = { route -> appState.navigate(route) }
+        )
+    }
+
     composable(SPLASH_SCREEN) {
         SplashScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
     }
@@ -139,9 +162,8 @@ fun NavGraphBuilder.lukaGraph(appState: LukaAppState) {
         )
     }
 
-    /*
-    composable(TASKS_SCREEN) { TasksScreen(openScreen = { route -> appState.navigate(route) }) }
-
+    composable(OPERATIONS_SCREEN) { OperationsScreen(openScreen = { route -> appState.navigate(route) }) }
+/*
     composable(
         route = "$EDIT_TASK_SCREEN$TASK_ID_ARG",
         arguments = listOf(navArgument(TASK_ID) {
@@ -153,5 +175,5 @@ fun NavGraphBuilder.lukaGraph(appState: LukaAppState) {
             popUpScreen = { appState.popUp() }
         )
     }
-    */
+ */
 }

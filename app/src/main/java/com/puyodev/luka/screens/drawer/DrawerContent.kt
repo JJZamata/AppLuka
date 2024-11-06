@@ -1,26 +1,26 @@
-package com.puyodev.luka.screens
+package com.puyodev.luka.screens.drawer
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationDrawerItem
@@ -35,16 +35,69 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.puyodev.luka.navigation.AppScreens
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.puyodev.luka.R
+import com.puyodev.luka.screens.NavigationItems
 import kotlinx.coroutines.launch
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DrawerContent() {
+fun DrawerScreen(
+    openScreen: (String) -> Unit,
+    viewModel: DrawerViewModel = hiltViewModel(),
+) {
+    DrawerContent(
+        onPayScreenClick = viewModel::onPayScreenClick,
+        onInfoScreenClick = viewModel::onInfoScreenClick,
+        onNotificationScreenClick = viewModel::onNotificationScreenClick,
+        onConfigurationScreenClick = viewModel::onConfigurationScreenClick,
+        onHistoryScreenClick = viewModel::onHistoryScreenClick,
+        openScreen = openScreen
+    )
+}
+
+@Composable
+fun DrawerHeader(user: String) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .padding(5.dp)
+            .fillMaxWidth()
+    ) {
+
+        Image(
+            painterResource(id = R.drawable.neko),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(100.dp)
+                .clip(CircleShape)
+        )
+        Spacer(modifier = Modifier.padding(5.dp))
+
+        Text(
+            text = user,
+            textAlign = TextAlign.Center,
+            //style = MaterialTheme.typography.bodyLarge,
+            //color = MaterialTheme.colorScheme.onPrimary,
+        )
+    }
+}
+
+@Composable
+fun DrawerContent(
+    onPayScreenClick: ((String) -> Unit) -> Unit,
+    onInfoScreenClick: ((String) -> Unit) -> Unit,
+    onNotificationScreenClick: ((String) -> Unit) -> Unit,
+    onConfigurationScreenClick: ((String) -> Unit) -> Unit,
+    onHistoryScreenClick: ((String) -> Unit) -> Unit,
+    openScreen: (String) -> Unit
+) {
     val items = listOf(
         NavigationItems(
             title = "Inicio",
@@ -57,13 +110,13 @@ fun DrawerContent() {
             unselectedIcon = Icons.Outlined.Info
         ),
         NavigationItems(
-            title = "Editar",
-            selectedIcon = Icons.Filled.Edit,
-            unselectedIcon = Icons.Outlined.Edit,
-            badgeCount = 105
+            title = "Notificaciones",
+            selectedIcon = Icons.Filled.Notifications,
+            unselectedIcon = Icons.Outlined.Notifications,
+            badgeCount = 10
         ),
         NavigationItems(
-            title = "Configuraciones",
+            title = "Configuración",
             selectedIcon = Icons.Filled.Settings,
             unselectedIcon = Icons.Outlined.Settings
         ),
@@ -89,16 +142,14 @@ fun DrawerContent() {
             selected = index == selectedItemIndex,
             onClick = {
                 selectedItemIndex = index
-/*
-                // Lógica de navegación basada en el título del ítem seleccionado
+                // Usa el appState para la navegación según el título seleccionado
                 when (item.title) {
-                    "Home" -> navController.navigate("home")
-                    "Info" -> navController.navigate("info")
-                    "Edit" -> navController.navigate("edit")
-                    "Settings" -> navController.navigate("settings")
-                    "Historial" -> navController.navigate(AppScreens.HistoryScreen.route)
+                    "Inicio" -> { onPayScreenClick(openScreen)}
+                    "Info" -> { onInfoScreenClick(openScreen)}
+                    "Notificaciones" -> { onNotificationScreenClick(openScreen)}
+                    "Configuración" -> { onConfigurationScreenClick(openScreen)}
+                    "Historial" -> { onHistoryScreenClick(openScreen)}
                 }
-*/
                 scope.launch {
                     drawerState.close()
                 }

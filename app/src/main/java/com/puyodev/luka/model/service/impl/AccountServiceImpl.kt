@@ -1,11 +1,12 @@
 package com.puyodev.luka.model.service.impl
 
-import com.puyodev.luka.model.User
+//import com.puyodev.luka.model.User
 import com.puyodev.luka.model.service.AccountService
 //import com.puyodev.luka.model.service.trace sirve para medir el rendimiento de un bloque de código con Firebase Performance Monitoring.
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.puyodev.luka.model.User
 import javax.inject.Inject
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -20,15 +21,17 @@ class AccountServiceImpl @Inject constructor(private val auth: FirebaseAuth, pri
   override val hasUser: Boolean
     get() = auth.currentUser != null
 
+
   override val currentUser: Flow<User>
     get() = callbackFlow {
       val listener =
         FirebaseAuth.AuthStateListener { auth ->
-          this.trySend(auth.currentUser?.let { User(it.uid, it.isAnonymous) } ?: User())
+          this.trySend(auth.currentUser?.let { User(it.uid, it.isAnonymous.toString()) } ?: User())
         }
       auth.addAuthStateListener(listener)
       awaitClose { auth.removeAuthStateListener(listener) }
     }
+
 
   // Crear una nueva cuenta
   override suspend fun createAccount(email: String, password: String, name:String) {
@@ -40,7 +43,7 @@ class AccountServiceImpl @Inject constructor(private val auth: FirebaseAuth, pri
     // Crear el documento en Firestore con datos adicionales
     val userData = hashMapOf(
       "username" to name,
-      "lukitas" to 0.00 // Monto inicial
+      "lukitas" to 30.00 // Monto inicial
     )
     firestore.collection("usuarios").document(uid).set(userData).await()
 
