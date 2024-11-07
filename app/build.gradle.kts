@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.androidx.material3.android)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.config.ktx)
+    implementation(libs.androidx.runtime.livedata)
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)

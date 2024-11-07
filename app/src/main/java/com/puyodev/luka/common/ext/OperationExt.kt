@@ -19,11 +19,11 @@ package com.puyodev.luka.common.ext
 import com.puyodev.luka.model.Operation
 
 fun Operation?.hasCreatedDate(): Boolean {
-  return this?.dueDate.orEmpty().isNotBlank()
+  return this?.createdDate.orEmpty().isNotBlank()
 }
 
 fun Operation?.hasCreatedTime(): Boolean {
-  return this?.dueTime.orEmpty().isNotBlank()
+  return this?.createdTime.orEmpty().isNotBlank()
 }
 
 fun Operation?.hasTitle(): Boolean {

@@ -13,6 +13,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,13 +42,15 @@ fun PayScreen(
 ) {
     // Observa un único objeto User en lugar de una lista
     val user by viewModel.user.collectAsStateWithLifecycle(initialValue = User())
-
+    val isLoading by viewModel.isLoading.collectAsState() // Agregar estado de carga
+    val paymentResult by viewModel.paymentResult.observeAsState()
 
     PayScreenContent(
         user = user,
         onProfileClick = viewModel::onProfileClick,
         onTicketClick = viewModel::onTicketClick,
-        openScreen = openScreen
+        openScreen = openScreen,
+        isLoading = isLoading // Pasar el estado de carga
     )
 }
 
@@ -106,8 +109,8 @@ fun PayScreenContent(
     user: User, // Añade este parámetro
     onProfileClick: ((String) -> Unit) -> Unit,
     onTicketClick: KFunction3<(String) -> Unit, Int, String, Unit>,
-    openScreen: (String) -> Unit
-
+    openScreen: (String) -> Unit,
+    isLoading: Boolean
 ){
     var valor by remember { mutableIntStateOf(1) } // Estado del contador
     val drawerState = rememberDrawerState(DrawerValue.Closed) // Estado para abrir/cerrar el drawer
@@ -218,35 +221,43 @@ fun PayScreenContent(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        ExtendedFloatingActionButton(
-                            modifier = Modifier
-                                .width(200.dp)
-                                .padding(0.dp, 40.dp),
-                            onClick = {
-                                // Inicia una corrutina para manejar el retraso
-                                scope.launch {
-                                    // Espera 8 segundos
-                                    kotlinx.coroutines.delay(5000)
-                                    // Luego navega a la pantalla de tickets
+                        if (isLoading) {
+                            Spacer(modifier = Modifier.size(5.dp))
+                            CircularProgressIndicator(
+                                modifier = Modifier.align(Alignment.CenterVertically),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        } else {
+                            // Mostrar contenido cuando no hay carga
+                            ExtendedFloatingActionButton(
+                                modifier = Modifier
+                                    .width(200.dp)
+                                    .padding(0.dp, 40.dp),
+                                onClick = {
+                                    // Inicia una corrutina para manejar el retraso
+                                    scope.launch {
+                                        // Luego navega a la pantalla de tickets
+                                        onTicketClick(openScreen, valor, "Urb. Monterrey D-8, José Luis Bustamante y Rivero")
+                                    }
+                                },
+                                /*
+                                onClick = {
                                     onTicketClick(openScreen, valor, "Urb. Monterrey D-8, José Luis Bustamante y Rivero")
-                                }
-                            },
-                            /*
-                            onClick = {
-                                onTicketClick(openScreen, valor, "Urb. Monterrey D-8, José Luis Bustamante y Rivero")
-                                //onTicketClick(openScreen)
-                                //navController.navigate(AppScreens.PaymentScreen.route + "/102/Av. Viña del Mar 705/$valor/02-05-2024 - 21:04")
-                            },*/
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            contentColor = MaterialTheme.colorScheme.primary,
-                            icon = {
-                                Icon(
-                                    Icons.Default.KeyboardArrowUp,
-                                    contentDescription = "Realizar pago" // Add a valid content description
-                                )
-                            },
-                            text = { Text(text = "Pagar", fontSize = 20.sp) }
-                        )
+                                    //onTicketClick(openScreen)
+                                    //navController.navigate(AppScreens.PaymentScreen.route + "/102/Av. Viña del Mar 705/$valor/02-05-2024 - 21:04")
+                                },*/
+
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.primary,
+                                icon = {
+                                    Icon(
+                                        Icons.Default.KeyboardArrowUp,
+                                        contentDescription = "Realizar pago" // Add a valid content description
+                                    )
+                                },
+                                text = { Text(text = "Pagar", fontSize = 20.sp) }
+                            )
+                        }
                     }
                 }
             }

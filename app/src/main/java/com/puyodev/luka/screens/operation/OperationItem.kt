@@ -84,13 +84,13 @@ private fun getCreatedDateAndTime(operation: Operation): String {
     val stringBuilder = StringBuilder("")
 
     if (operation.hasCreatedDate()) {
-        stringBuilder.append(operation.dueDate)
+        stringBuilder.append(operation.createdDate)
         stringBuilder.append(" ")
     }
 
     if (operation.hasCreatedTime()) {
         stringBuilder.append("a las ")
-        stringBuilder.append(operation.dueTime)
+        stringBuilder.append(operation.createdTime)
     }
 
     return stringBuilder.toString()
