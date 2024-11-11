@@ -82,10 +82,12 @@ dependencies {
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.firebase.firestore.ktx)
     testImplementation(libs.junit)
+    testImplementation("io.mockk:1.12.2")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+
 
     // Agregar Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))

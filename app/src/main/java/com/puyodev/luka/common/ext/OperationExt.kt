@@ -26,8 +26,8 @@ fun Operation?.hasCreatedTime(): Boolean {
   return this?.createdTime.orEmpty().isNotBlank()
 }
 
-fun Operation?.hasTitle(): Boolean {
-  return this?.title.orEmpty().isNotBlank()
+fun Operation?.hasFrom(): Boolean {
+  return this?.from.orEmpty().isNotBlank()
 }
 
 fun Operation?.hasType(): Boolean {

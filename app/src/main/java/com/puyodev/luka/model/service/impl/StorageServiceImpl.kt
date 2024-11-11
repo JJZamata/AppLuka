@@ -55,15 +55,19 @@ class StorageServiceImpl @Inject constructor(
     firestore.collection(OPERATION_COLLECTION).document(operationId).get().await().toObject()
 
   override suspend fun save(operation: Operation): String =
-    trace(SAVE_OPERATION_TRACE) {
-      val operationWithUserId = operation.copy(userId = auth.currentUserId)
-      firestore.collection(OPERATION_COLLECTION).add(operationWithUserId).await().id
+    if (operation.token.isNotEmpty()) {
+      trace(SAVE_OPERATION_TRACE) {
+        val operationWithUserId = operation.copy(userId = auth.currentUserId)
+        firestore.collection(OPERATION_COLLECTION).add(operationWithUserId).await().id
+      }
+    }else{
+      throw IllegalArgumentException("Token no válido o ausente")
     }
 
   override suspend fun update(operation: Operation): Unit =
-    trace(UPDATE_OPERATION_TRACE) {
-      firestore.collection(OPERATION_COLLECTION).document(operation.id).set(operation).await()
-    }
+      trace(UPDATE_OPERATION_TRACE) {
+        firestore.collection(OPERATION_COLLECTION).document(operation.id).set(operation).await()
+      }
 
   override suspend fun delete(operationId: String) {
     firestore.collection(OPERATION_COLLECTION).document(operationId).delete().await()

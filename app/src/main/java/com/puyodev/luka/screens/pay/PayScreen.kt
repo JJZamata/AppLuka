@@ -1,6 +1,8 @@
 package com.puyodev.luka.screens.pay
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -13,7 +15,6 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,6 +36,7 @@ import com.puyodev.luka.screens.drawer.DrawerScreen
 import kotlinx.coroutines.launch
 import kotlin.reflect.KFunction3
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PayScreen(
     openScreen: (String) -> Unit,
@@ -43,8 +45,6 @@ fun PayScreen(
     // Observa un único objeto User en lugar de una lista
     val user by viewModel.user.collectAsStateWithLifecycle(initialValue = User())
     val isLoading by viewModel.isLoading.collectAsState() // Agregar estado de carga
-    val paymentResult by viewModel.paymentResult.observeAsState()
-
     PayScreenContent(
         user = user,
         onProfileClick = viewModel::onProfileClick,
@@ -240,13 +240,6 @@ fun PayScreenContent(
                                         onTicketClick(openScreen, valor, "Urb. Monterrey D-8, José Luis Bustamante y Rivero")
                                     }
                                 },
-                                /*
-                                onClick = {
-                                    onTicketClick(openScreen, valor, "Urb. Monterrey D-8, José Luis Bustamante y Rivero")
-                                    //onTicketClick(openScreen)
-                                    //navController.navigate(AppScreens.PaymentScreen.route + "/102/Av. Viña del Mar 705/$valor/02-05-2024 - 21:04")
-                                },*/
-
                                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                                 contentColor = MaterialTheme.colorScheme.primary,
                                 icon = {
@@ -263,3 +256,9 @@ fun PayScreenContent(
             }
         }
     }
+
+
+//enviar parametros a la vista ticketScreen
+//lector NFC crear codigo que busque una consulta al campo que tenga el valor de uidTag vacio "" actualizando con el valor del uidTag conseguido
+//que el valor no pueda ser mayor al monto y que el monto sea uistate osea cada vez que aumenta el valor disminuya creando asi una concordancia con el pago
+//contemplar entre payments y reloads

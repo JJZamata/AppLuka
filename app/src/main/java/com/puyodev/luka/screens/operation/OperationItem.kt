@@ -18,7 +18,7 @@ import com.puyodev.luka.common.composable.DropdownContextMenu
 import com.puyodev.luka.common.ext.contextMenu
 import com.puyodev.luka.common.ext.hasCreatedDate
 import com.puyodev.luka.common.ext.hasCreatedTime
-import com.puyodev.luka.common.ext.hasTitle
+import com.puyodev.luka.common.ext.hasFrom
 import com.puyodev.luka.common.ext.hasType
 import com.puyodev.luka.model.Operation
 import com.puyodev.luka.screens.Operacion
@@ -104,9 +104,9 @@ private fun getCreatedTypeAndTitle(operation: Operation): String {
         stringBuilder.append(" ")
     }
 
-    if (operation.hasTitle()) {
+    if (operation.hasFrom()) {
         stringBuilder.append(": ")
-        stringBuilder.append(operation.title)
+        stringBuilder.append(operation.from)
     }
 
     return stringBuilder.toString()
