@@ -24,12 +24,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.puyodev.luka.R
 import com.puyodev.luka.model.User
 //import com.example.makeitso.model.Task
 import com.puyodev.luka.ui.theme.LukaTheme
+import nl.dionsegijn.konfetti.compose.KonfettiView
+import nl.dionsegijn.konfetti.core.Party
+import nl.dionsegijn.konfetti.core.Position
+import nl.dionsegijn.konfetti.core.emitter.Emitter
+import java.util.concurrent.TimeUnit
 
 @Composable
 fun TicketScreen(
@@ -43,19 +49,47 @@ fun TicketScreen(
     val context = LocalContext.current
     val view = LocalView.current
 
-    TicketScreenContent(
-        user = user,
-        valor = valor,
-        direccion = direccion,
-        onPayScreenClick = viewModel::onPayScreenClick,
-        onShareClick = {
-            val uri = viewModel.captureAndShareImage(view, context)
-            if (uri != null) {
-                viewModel.shareImage(context, uri)
-            }
-        },
-        openScreen = openScreen
-    )
+    var showConfetti by remember { mutableStateOf(false) }
+
+    // Inicia la animación cuando se carga la pantalla
+    LaunchedEffect(Unit) {
+        showConfetti = true
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Mostrar confetti cuando showConfetti sea verdadero
+        if (showConfetti) {
+            KonfettiView(
+                modifier = Modifier.fillMaxSize().zIndex(1f),
+                parties = listOf(
+                    Party(
+                        speed = 0f,
+                        maxSpeed = 30f,
+                        damping = 0.9f,
+                        spread = 360,
+                        colors = listOf(0xfce18a, 0xff726d, 0xf4306d, 0xb48def),
+                        emitter = Emitter(duration = 3, timeUnit = TimeUnit.SECONDS).perSecond(50),
+                        position = Position.Relative(0.5, 0.20),
+                    )
+                )
+            )
+        }
+
+        // Tu pantalla de contenido
+        TicketScreenContent(
+            user = user,
+            valor = valor,
+            direccion = direccion,
+            onPayScreenClick = viewModel::onPayScreenClick,
+            onShareClick = {
+                val uri = viewModel.captureAndShareImage(view, context)
+                if (uri != null) {
+                    viewModel.shareImage(context, uri)
+                }
+            },
+            openScreen = openScreen
+        )
+    }
 }
 
 @Composable
@@ -70,6 +104,7 @@ fun TicketScreenContent(
 
 ) {
     val fecha = "12/11/2024"
+
     Column(
         modifier = Modifier
             .background(
@@ -84,7 +119,6 @@ fun TicketScreenContent(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()

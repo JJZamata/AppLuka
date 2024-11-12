@@ -108,4 +108,7 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     //- compilador
     ksp("com.google.dagger:hilt-compiler:2.47")
+
+    //animacion confetti
+    implementation("nl.dionsegijn:konfetti-compose:2.0.4")
 }
