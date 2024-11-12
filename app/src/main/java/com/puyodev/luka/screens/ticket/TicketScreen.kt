@@ -1,6 +1,7 @@
 
 package com.puyodev.luka.screens.ticket
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,12 +9,16 @@ import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,13 +40,20 @@ fun TicketScreen(
 ) {
     // Observa un único objeto User en lugar de una lista
     val user by viewModel.user.collectAsStateWithLifecycle(initialValue = User())
-
+    val context = LocalContext.current
+    val view = LocalView.current
 
     TicketScreenContent(
         user = user,
-        valor = valor,  // Pasamos el valor como parámetro
-        direccion = direccion,  // Pasamos la dirección como parámetro
+        valor = valor,
+        direccion = direccion,
         onPayScreenClick = viewModel::onPayScreenClick,
+        onShareClick = {
+            val uri = viewModel.captureAndShareImage(view, context)
+            if (uri != null) {
+                viewModel.shareImage(context, uri)
+            }
+        },
         openScreen = openScreen
     )
 }
@@ -53,10 +65,11 @@ fun TicketScreenContent(
     valor: Int?,  // Recibe el parámetro valor
     direccion: String?,  // Recibe el parámetro direccion
     onPayScreenClick: ((String) -> Unit) -> Unit,
+    onShareClick: () -> Unit,
     openScreen: (String) -> Unit
 
 ) {
-    val fecha = "31/10/2024"
+    val fecha = "12/11/2024"
     Column(
         modifier = Modifier
             .background(
@@ -161,7 +174,7 @@ fun TicketScreenContent(
             horizontalArrangement = Arrangement.SpaceEvenly // Distribuye los elementos de forma uniforme
         ) {
             SmallFloatingActionButton(
-                onClick = { onPayScreenClick(openScreen) },
+                onClick = onShareClick,
                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
                 contentColor = MaterialTheme.colorScheme.surface
             ) {
@@ -170,7 +183,7 @@ fun TicketScreenContent(
                     modifier = Modifier
                         .size(60.dp)
                         .padding(10.dp),
-                    contentDescription = "" // Add a valid content description
+                    contentDescription = "Compartir voucher Luka" // Add a valid content description
                 )
             }
             SmallFloatingActionButton(
@@ -183,7 +196,7 @@ fun TicketScreenContent(
                     modifier = Modifier
                         .size(60.dp)
                         .padding(10.dp),
-                    contentDescription = "" // Add a valid content description
+                    contentDescription = "Regresar a la pantalla principal" // Add a valid content description
                 )
             }
             SmallFloatingActionButton(
@@ -192,7 +205,7 @@ fun TicketScreenContent(
                 contentColor = MaterialTheme.colorScheme.surface
             ) {
                 Icon(
-                    Icons.Outlined.Edit,
+                    Icons.Outlined.Place,
                     modifier = Modifier
                         .size(60.dp)
                         .padding(10.dp),
@@ -202,6 +215,8 @@ fun TicketScreenContent(
         }
     }
 }
+
+
 
 @Preview(showBackground = true)
 @Composable

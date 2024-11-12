@@ -91,8 +91,10 @@ class PayViewModel @Inject constructor(
                 storageService.update(editedOperation)
             }
 
-            delay(5000)
+            delay(1000)
 
+            val route = "$TICKET_SCREEN/$valor/$direccion" // Enviar resultados por parámetro
+            openScreen(route)
             /*
             // Verifica si `uidTag` está lleno después del retraso
             if (operation.value.uidTag.isNotEmpty() && operation.value.uidTag != "") {
