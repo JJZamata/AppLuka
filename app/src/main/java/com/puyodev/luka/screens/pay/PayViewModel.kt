@@ -25,6 +25,10 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.Timestamp
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.asStateFlow
 import com.puyodev.luka.common.snackbar.SnackbarManager
 import com.puyodev.luka.R.string as AppText
 
@@ -39,8 +43,8 @@ class PayViewModel @Inject constructor(
     val user = storageService.currentUserData
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
-
     val operation = mutableStateOf(Operation())
+
 
     init {
         val operationId = savedStateHandle.get<String>(OPERATION_ID)
@@ -51,6 +55,23 @@ class PayViewModel @Inject constructor(
         }
     }
 
+    private val _nfcStatus = MutableStateFlow<NFCStatus>(NFCStatus.Idle)
+    val nfcStatus = _nfcStatus.asStateFlow()
+
+    sealed class NFCStatus {
+        object Idle : NFCStatus()
+        object WaitingForNFC : NFCStatus()
+        object Success : NFCStatus()
+        data class Error(val message: String) : NFCStatus()
+    }
+
+    companion object {
+        private val _nfcDetected = MutableStateFlow(false)
+
+        fun onNFCDetected() {
+            _nfcDetected.value = true
+        }
+    }
     //Hora y fecha peruana
     // Configurar zona horaria de Perú (UTC-5)
     @RequiresApi(Build.VERSION_CODES.O)
@@ -63,58 +84,40 @@ class PayViewModel @Inject constructor(
     // Asignar hora actual formateada a "HH:mm" (horas y minutos)
     @RequiresApi(Build.VERSION_CODES.O)
     val createdTime: String = LocalTime.now(peruZone).format(DateTimeFormatter.ofPattern("HH:mm"))
-
-
     fun onProfileClick(openScreen: (String) -> Unit) = openScreen(PROFILE_SCREEN)
     //fun onTicketClick(openScreen: (String) -> Unit) = openScreen(TICKET_SCREEN)
     @RequiresApi(Build.VERSION_CODES.O)
     fun onTicketClick(openScreen: (String) -> Unit, valor: Int, direccion: String) {
-        _isLoading.value = true
-        val token = generateToken()
+        viewModelScope.launch {
+            try {
+                _nfcStatus.value = NFCStatus.WaitingForNFC
+                _isLoading.value = true
 
-        operation.value = operation.value.copy(
-            from = "101",
-            createdDate = createdDate.toString(),
-            createdTime = createdTime,
-            mount = valor.toString(),
-            type = "Pago",
-            busStop = direccion,
-            uidTag = "",
-            token = token // Añadir el token aquí
-        )
+                // Crear nueva operación
+                val newOperation = Operation(
+                    from = "101",
+                    createdDate = createdDate.toString(),
+                    createdTime = createdTime,
+                    mount = valor.toString(),
+                    type = "Pago",
+                    busStop = direccion,
+                    uid = "",  // Será llenado por el Raspberry Pi
+                    timestamp = Timestamp.now()
+                )
 
-        launchCatching{
-            val editedOperation = operation.value
-            if (editedOperation.id.isBlank()) {
-                storageService.save(editedOperation)
-            } else {
-                storageService.update(editedOperation)
-            }
+                // Guardar en Firestore
+                storageService.save(newOperation)
 
-            delay(1000)
-
-            val route = "$TICKET_SCREEN/$valor/$direccion" // Enviar resultados por parámetro
-            openScreen(route)
-            /*
-            // Verifica si `uidTag` está lleno después del retraso
-            if (operation.value.uidTag.isNotEmpty() && operation.value.uidTag != "") {
-                // Si `uidTag` tiene un valor válido, navega a TICKET_SCREEN
-                val route = "$TICKET_SCREEN/$valor/$direccion" // Enviar resultados por parámetro
+                // Navegar inmediatamente a la pantalla de ticket
+                _nfcStatus.value = NFCStatus.Success
+                val route = "$TICKET_SCREEN/$valor/$direccion"
                 openScreen(route)
-            } else {
-                // Si `uidTag` está vacío o aún es "pendiente", muestra el mensaje de error
-                SnackbarManager.showMessage(AppText.failed)
-            }
-*/
 
-            _isLoading.value = false
+            } catch (e: Exception) {
+                _nfcStatus.value = NFCStatus.Error(e.message ?: "Error desconocido")
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
-}
-
-
-// Función para generar un token seguro
-private fun generateToken(): String {
-    // Aquí puedes utilizar una función para generar un token aleatorio seguro, como UUID
-    return java.util.UUID.randomUUID().toString()
 }

@@ -44,13 +44,15 @@ fun PayScreen(
 ) {
     // Observa un único objeto User en lugar de una lista
     val user by viewModel.user.collectAsStateWithLifecycle(initialValue = User())
-    val isLoading by viewModel.isLoading.collectAsState() // Agregar estado de carga
+    val isLoading by viewModel.isLoading.collectAsState()
+    val nfcStatus by viewModel.nfcStatus.collectAsState() // Añadido el estado NFC
     PayScreenContent(
         user = user,
         onProfileClick = viewModel::onProfileClick,
         onTicketClick = viewModel::onTicketClick,
         openScreen = openScreen,
-        isLoading = isLoading // Pasar el estado de carga
+        isLoading = isLoading,
+        nfcStatus = nfcStatus
     )
 }
 
@@ -106,12 +108,13 @@ fun CustomBottomBar() {
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun PayScreenContent(
-    user: User, // Añade este parámetro
+    user: User,
     onProfileClick: ((String) -> Unit) -> Unit,
     onTicketClick: KFunction3<(String) -> Unit, Int, String, Unit>,
     openScreen: (String) -> Unit,
-    isLoading: Boolean
-){
+    isLoading: Boolean,
+    nfcStatus: PayViewModel.NFCStatus
+) {
     var valor by remember { mutableIntStateOf(1) } // Estado del contador
     val drawerState = rememberDrawerState(DrawerValue.Closed) // Estado para abrir/cerrar el drawer
     val scope = rememberCoroutineScope() // Alcance de la corrutina para manejar el drawer
@@ -221,35 +224,46 @@ fun PayScreenContent(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        if (isLoading) {
-                            Spacer(modifier = Modifier.size(5.dp))
-                            CircularProgressIndicator(
-                                modifier = Modifier.align(Alignment.CenterVertically),
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        } else {
-                            // Mostrar contenido cuando no hay carga
-                            ExtendedFloatingActionButton(
-                                modifier = Modifier
-                                    .width(200.dp)
-                                    .padding(0.dp, 40.dp),
-                                onClick = {
-                                    // Inicia una corrutina para manejar el retraso
-                                    scope.launch {
-                                        // Luego navega a la pantalla de tickets
-                                        onTicketClick(openScreen, valor, "Urb. Monterrey D-8, José Luis Bustamante y Rivero")
-                                    }
-                                },
-                                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                contentColor = MaterialTheme.colorScheme.primary,
-                                icon = {
-                                    Icon(
-                                        Icons.Default.KeyboardArrowUp,
-                                        contentDescription = "Realizar pago" // Add a valid content description
+                        when (nfcStatus) {
+                            is PayViewModel.NFCStatus.Idle -> {
+                                if (isLoading) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.padding(top = 40.dp),
+                                        color = MaterialTheme.colorScheme.primary
                                     )
-                                },
-                                text = { Text(text = "Pagar", fontSize = 20.sp) }
-                            )
+                                } else {
+                                    ExtendedFloatingActionButton(
+                                        modifier = Modifier
+                                            .width(200.dp)
+                                            .padding(0.dp, 40.dp),
+                                        onClick = {
+                                            onTicketClick(
+                                                openScreen,
+                                                valor,
+                                                "Urb. Monterrey D-8, José Luis Bustamante y Rivero"
+                                            )
+                                        },
+                                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                        contentColor = MaterialTheme.colorScheme.primary,
+                                        icon = {
+                                            Icon(
+                                                Icons.Default.KeyboardArrowUp,
+                                                contentDescription = "Realizar pago"
+                                            )
+                                        },
+                                        text = { Text(text = "Pagar", fontSize = 20.sp) }
+                                    )
+                                }
+                            }
+                            is PayViewModel.NFCStatus.WaitingForNFC -> {
+                                NFCWaitingIndicator()
+                            }
+                            is PayViewModel.NFCStatus.Success -> {
+                                // No mostrar nada, la navegación ocurrirá automáticamente
+                            }
+                            is PayViewModel.NFCStatus.Error -> {
+                                ErrorMessage(message = (nfcStatus as PayViewModel.NFCStatus.Error).message)
+                            }
                         }
                     }
                 }
@@ -257,6 +271,29 @@ fun PayScreenContent(
         }
     }
 
+@Composable
+fun NFCWaitingIndicator() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(16.dp)
+    ) {
+        CircularProgressIndicator()
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Acerque su teléfono al lector...",
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
+}
+
+@Composable
+fun ErrorMessage(message: String) {
+    Text(
+        text = message,
+        color = MaterialTheme.colorScheme.error,
+        modifier = Modifier.padding(16.dp)
+    )
+}
 
 //enviar parametros a la vista ticketScreen
 //lector NFC crear codigo que busque una consulta al campo que tenga el valor de uidTag vacio "" actualizando con el valor del uidTag conseguido

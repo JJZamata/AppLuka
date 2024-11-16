@@ -15,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -210,7 +211,11 @@ fun TicketScreenContent(
             SmallFloatingActionButton(
                 onClick = onShareClick,
                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                contentColor = MaterialTheme.colorScheme.surface
+                contentColor = MaterialTheme.colorScheme.surface,
+                modifier = Modifier.shadow(
+                    elevation = 8.dp,
+                    shape = MaterialTheme.shapes.small // Aplica sombra en la forma definida
+                )
             ) {
                 Icon(
                     Icons.Outlined.Share,
@@ -223,7 +228,11 @@ fun TicketScreenContent(
             SmallFloatingActionButton(
                 onClick = { onPayScreenClick(openScreen) },
                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                contentColor = MaterialTheme.colorScheme.surface
+                contentColor = MaterialTheme.colorScheme.surface,
+                        modifier = Modifier.shadow(
+                        elevation = 8.dp,
+                shape = MaterialTheme.shapes.small // Aplica sombra en la forma definida
+            )
             ) {
                 Icon(
                     Icons.Filled.Menu,
@@ -236,7 +245,11 @@ fun TicketScreenContent(
             SmallFloatingActionButton(
                 onClick = { onPayScreenClick(openScreen) },
                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                contentColor = MaterialTheme.colorScheme.surface
+                contentColor = MaterialTheme.colorScheme.surface,
+                modifier = Modifier.shadow(
+                    elevation = 8.dp,
+                    shape = MaterialTheme.shapes.small // Aplica sombra en la forma definida
+                )
             ) {
                 Icon(
                     Icons.Outlined.Place,

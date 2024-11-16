@@ -6,6 +6,7 @@ const val LOGIN_SCREEN = "LoginScreen"
 const val PAY_SCREEN = "PayScreen"
 const val SIGNUP_SCREEN = "SignUpScreen"
 const val PROFILE_SCREEN = "ProfileScreen"
+const val PAYMENT_SCREEN = "PaymentGatewayScreen"
 const val TICKET_SCREEN = "TicketScreen"
 const val OPERATIONS_SCREEN = "OperationsScreen"
 

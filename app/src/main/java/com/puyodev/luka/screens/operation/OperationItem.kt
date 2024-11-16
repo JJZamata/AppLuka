@@ -21,7 +21,6 @@ import com.puyodev.luka.common.ext.hasCreatedTime
 import com.puyodev.luka.common.ext.hasFrom
 import com.puyodev.luka.common.ext.hasType
 import com.puyodev.luka.model.Operation
-import com.puyodev.luka.screens.Operacion
 import com.puyodev.luka.ui.theme.LukaTheme
 import java.lang.StringBuilder
 

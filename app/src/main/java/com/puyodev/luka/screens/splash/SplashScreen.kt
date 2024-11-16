@@ -18,7 +18,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.puyodev.luka.R
 import com.puyodev.luka.R.string as AppText
-import com.puyodev.luka.navigation.AppScreens
 import com.puyodev.luka.ui.theme.LukaTheme
 import kotlinx.coroutines.delay
 

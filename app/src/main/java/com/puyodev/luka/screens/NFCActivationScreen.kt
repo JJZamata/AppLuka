@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-
+//pantalla para pruebas acerca de la activacion de NFC
 @Composable
 fun NFCActivationScreen(activity: Activity, nfcAdapter: NfcAdapter) {
     var nfcEnabled by remember { mutableStateOf(nfcAdapter.isEnabled) }

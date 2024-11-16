@@ -1,6 +1,8 @@
 package com.puyodev.luka
 
 import android.content.res.Resources
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -19,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.puyodev.luka.common.snackbar.SnackbarManager
+import com.puyodev.luka.screens.PaymentGateway.PaymentGatewayScreen
 //import com.puyodev.luka.screens.AppContent
 import com.puyodev.luka.screens.pay.PayScreen
 import com.puyodev.luka.screens.profile.ProfileScreen
@@ -37,6 +40,7 @@ import com.puyodev.luka.ui.theme.LukaTheme
 //import com.google.accompanist.permissions.shouldShowRationale
 import kotlinx.coroutines.CoroutineScope
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun LukaApp() {
     LukaTheme {
@@ -109,6 +113,7 @@ fun resources(): Resources {
 }
 
 //se define el gráfico de navegación - se agrupa todas las rutas y screens respectivas
+@RequiresApi(Build.VERSION_CODES.O)
 fun NavGraphBuilder.lukaGraph(appState: LukaAppState) {
 
 
@@ -155,6 +160,10 @@ fun NavGraphBuilder.lukaGraph(appState: LukaAppState) {
         PayScreen(openScreen = { route -> appState.navigate(route) })
     }
 
+    composable(PAYMENT_SCREEN){
+        PaymentGatewayScreen(openScreen = { route -> appState.navigate(route) })
+    }
+
     composable(PROFILE_SCREEN){
         ProfileScreen(
             restartApp = { route -> appState.clearAndNavigate(route) },
@@ -163,17 +172,5 @@ fun NavGraphBuilder.lukaGraph(appState: LukaAppState) {
     }
 
     composable(OPERATIONS_SCREEN) { OperationsScreen(openScreen = { route -> appState.navigate(route) }) }
-/*
-    composable(
-        route = "$EDIT_TASK_SCREEN$TASK_ID_ARG",
-        arguments = listOf(navArgument(TASK_ID) {
-            nullable = true
-            defaultValue = null
-        })
-    ) {
-        EditTaskScreen(
-            popUpScreen = { appState.popUp() }
-        )
-    }
- */
+
 }

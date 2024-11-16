@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <!-- Permiso para usar NFC -->
     <uses-permission android:name="android.permission.NFC" />
-
-    <!-- Declarar que la aplicación requiere NFC -->
-    <uses-feature android:name="android.hardware.nfc" android:required="true" />
+    <uses-feature android:name="android.hardware.nfc" android:required="false"/>
 
     <application
         android:allowBackup="true"
@@ -34,7 +32,18 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- Filtro de intentos para manejar NFC -->
+            <intent-filter>
+                <action android:name="android.nfc.action.TECH_DISCOVERED" />
+            </intent-filter>
+
+            <!-- Meta-data para tecnologías NFC -->
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/nfc_tech_filter" />
         </activity>
+
+
 
         <!-- Aquí se define el FileProvider -->
         <provider

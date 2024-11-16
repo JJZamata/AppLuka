@@ -1,6 +1,8 @@
+// Operation.kt
 package com.puyodev.luka.model
 
 import com.google.firebase.firestore.DocumentId
+import com.google.firebase.Timestamp
 
 data class Operation(
     @DocumentId val id: String = "",
@@ -10,7 +12,7 @@ data class Operation(
     val mount: String = "",
     val type: String = "",
     val busStop: String = "",
-    val uidTag: String = "",
-    val token: String = "",
+    val uid: String = "",     // Este campo será llenado por el Raspberry Pi
     val userId: String = "",
+    val timestamp: Timestamp? = null
 )
