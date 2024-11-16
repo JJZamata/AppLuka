@@ -1,5 +1,7 @@
 package com.puyodev.luka.screens.PaymentGateway
 
+import com.puyodev.luka.PAYMENT_SCREEN
+import com.puyodev.luka.PROFILE_SCREEN
 import com.puyodev.luka.model.service.ConfigurationService
 import com.puyodev.luka.model.service.LogService
 import com.puyodev.luka.model.service.StorageService
@@ -14,5 +16,7 @@ class PaymentGatewayViewModel @Inject constructor(
     private val configurationService: ConfigurationService
 ) : LukaViewModel(logService) {
     val user = storageService.currentUserData
+
+    fun onProfileClick(openScreen: (String) -> Unit) = openScreen(PROFILE_SCREEN)
 
 }

@@ -16,13 +16,14 @@ import androidx.compose.ui.unit.sp
 import com.puyodev.luka.R.drawable as AppIcon
 import com.puyodev.luka.common.composable.DropdownContextMenu
 import com.puyodev.luka.common.ext.contextMenu
-import com.puyodev.luka.common.ext.hasCreatedDate
-import com.puyodev.luka.common.ext.hasCreatedTime
+import com.puyodev.luka.common.ext.hasCreatedDateTime
 import com.puyodev.luka.common.ext.hasFrom
 import com.puyodev.luka.common.ext.hasType
 import com.puyodev.luka.model.Operation
 import com.puyodev.luka.ui.theme.LukaTheme
 import java.lang.StringBuilder
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun OperationItem(
@@ -80,19 +81,17 @@ fun OperationItem(
 }
 
 private fun getCreatedDateAndTime(operation: Operation): String {
-    val stringBuilder = StringBuilder("")
+    val stringBuilder = StringBuilder()
+    val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault())
 
-    if (operation.hasCreatedDate()) {
-        stringBuilder.append(operation.createdDate)
-        stringBuilder.append(" ")
+    if (operation.hasCreatedDateTime()) {
+        operation.completedTimestamp?.toDate()?.let { date ->
+            stringBuilder.append("Operación realizada el: ")
+            stringBuilder.append(dateFormat.format(date))
+        }
     }
 
-    if (operation.hasCreatedTime()) {
-        stringBuilder.append("a las ")
-        stringBuilder.append(operation.createdTime)
-    }
-
-    return stringBuilder.toString()
+    return stringBuilder.toString().trim()
 }
 
 private fun getCreatedTypeAndTitle(operation: Operation): String {

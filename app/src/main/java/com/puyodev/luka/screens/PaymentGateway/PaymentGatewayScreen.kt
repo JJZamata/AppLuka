@@ -4,10 +4,14 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.puyodev.luka.R
 import com.puyodev.luka.screens.drawer.DrawerHeader
 import com.puyodev.luka.screens.drawer.DrawerScreen
 import com.puyodev.luka.common.composable.ActionToolbar
@@ -28,8 +32,7 @@ fun PaymentGatewayScreen(
 
     PaymentGatewayScreenContent(
         user = user,
-        //balance = balance,
-        //onProfileClick = viewModel::onProfileClick,
+        onProfileClick = viewModel::onProfileClick,
         openScreen = openScreen,
     )
 }
@@ -38,8 +41,7 @@ fun PaymentGatewayScreen(
 @Composable
 fun PaymentGatewayScreenContent(
     user: User,
-    //balance: Double,
-    //onProfileClick: ((String) -> Unit) -> Unit,
+    onProfileClick: ((String) -> Unit) -> Unit,
     modifier: Modifier = Modifier,
     openScreen: (String) -> Unit
 ) {
@@ -64,7 +66,7 @@ fun PaymentGatewayScreenContent(
                 ActionToolbar(
                     title = "Recargar Saldo",
                     modifier = Modifier.toolbarActions(),
-                    endAction = { /*onProfileClick(openScreen) */},
+                    endAction = { onProfileClick(openScreen)},
                     onMenuClick = {
                         scope.launch { drawerState.open() }
                     }
@@ -76,12 +78,28 @@ fun PaymentGatewayScreenContent(
                     .fillMaxSize()
                     .padding(innerPadding)
                     .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                Text(
-                    text = "Saldo Actual: S/30.00",
-                    style = MaterialTheme.typography.headlineMedium
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp) // Espaciado entre el ícono y el texto
+                ) {
+                    Text(
+                        text = "Lukitas: ",
+                        style = MaterialTheme.typography.headlineLarge
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.lukita_coin),
+                        contentDescription = "Lukitas Icono",
+                        modifier = Modifier.size(40.dp),
+                        tint = Color.Unspecified
+
+                    )
+                    Text(
+                        text = "${user.lukitas}",
+                        style = MaterialTheme.typography.headlineLarge
+                    )
+                }
 
                 // Campo para ingresar el monto de recarga
                 var rechargeAmount by remember { mutableStateOf("") }

@@ -11,10 +11,15 @@ import com.puyodev.luka.model.Operation
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.trySendBlocking
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.channels.ProducerScope
 
 class StorageServiceImpl @Inject constructor(
   private val firestore: FirebaseFirestore,
@@ -54,6 +59,23 @@ class StorageServiceImpl @Inject constructor(
   override suspend fun getOperation(operationId: String): Operation? =
     firestore.collection(OPERATION_COLLECTION).document(operationId).get().await().toObject()
 
+  override suspend fun getOperationFlow(operationId: String): Flow<Operation> = callbackFlow {
+    val subscription = firestore.collection(OPERATION_COLLECTION)
+      .document(operationId)
+      .addSnapshotListener { snapshot, error ->
+        if (error != null) {
+          close(error)
+          return@addSnapshotListener
+        }
+
+        snapshot?.toObject(Operation::class.java)?.let { operation ->
+          trySend(operation)
+        }
+      }
+
+    awaitClose { subscription.remove() }
+  }
+
   override suspend fun save(operation: Operation): String =
       trace(SAVE_OPERATION_TRACE) {
         val operationWithUserId = operation.copy(userId = auth.currentUserId)
@@ -64,6 +86,7 @@ class StorageServiceImpl @Inject constructor(
       trace(UPDATE_OPERATION_TRACE) {
         firestore.collection(OPERATION_COLLECTION).document(operation.id).set(operation).await()
       }
+
 
   override suspend fun delete(operationId: String) {
     firestore.collection(OPERATION_COLLECTION).document(operationId).delete().await()

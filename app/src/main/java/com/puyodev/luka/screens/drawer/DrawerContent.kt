@@ -14,11 +14,13 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
@@ -53,7 +55,8 @@ fun DrawerScreen(
     DrawerContent(
         onPayScreenClick = viewModel::onPayScreenClick,
         onInfoScreenClick = viewModel::onInfoScreenClick,
-        onNotificationScreenClick = viewModel::onNotificationScreenClick,
+        onRechargeScreenClick = viewModel::onRechargeScreenClick,
+        //onNotificationScreenClick = viewModel::onNotificationScreenClick,
         onConfigurationScreenClick = viewModel::onConfigurationScreenClick,
         onHistoryScreenClick = viewModel::onHistoryScreenClick,
         openScreen = openScreen
@@ -93,7 +96,8 @@ fun DrawerHeader(user: String) {
 fun DrawerContent(
     onPayScreenClick: ((String) -> Unit) -> Unit,
     onInfoScreenClick: ((String) -> Unit) -> Unit,
-    onNotificationScreenClick: ((String) -> Unit) -> Unit,
+    onRechargeScreenClick: ((String) -> Unit) -> Unit,
+    //onNotificationScreenClick: ((String) -> Unit) -> Unit,
     onConfigurationScreenClick: ((String) -> Unit) -> Unit,
     onHistoryScreenClick: ((String) -> Unit) -> Unit,
     openScreen: (String) -> Unit
@@ -110,11 +114,16 @@ fun DrawerContent(
             unselectedIcon = Icons.Outlined.Info
         ),
         NavigationItems(
+            title = "Recargar",
+            selectedIcon = Icons.Filled.Refresh,
+            unselectedIcon = Icons.Outlined.Refresh
+        ),
+        /*NavigationItems(
             title = "Notificaciones",
             selectedIcon = Icons.Filled.Notifications,
             unselectedIcon = Icons.Outlined.Notifications,
             badgeCount = 10
-        ),
+        ),*/
         NavigationItems(
             title = "Configuración",
             selectedIcon = Icons.Filled.Settings,
@@ -146,7 +155,8 @@ fun DrawerContent(
                 when (item.title) {
                     "Inicio" -> { onPayScreenClick(openScreen)}
                     "Info" -> { onInfoScreenClick(openScreen)}
-                    "Notificaciones" -> { onNotificationScreenClick(openScreen)}
+                    //"Notificaciones" -> { onNotificationScreenClick(openScreen)}
+                    "Recargar" -> { onRechargeScreenClick(openScreen)}
                     "Configuración" -> { onConfigurationScreenClick(openScreen)}
                     "Historial" -> { onHistoryScreenClick(openScreen)}
                 }

@@ -32,6 +32,7 @@ import com.puyodev.luka.common.ext.toolbarActions
 import com.puyodev.luka.model.User
 import com.puyodev.luka.screens.drawer.DrawerHeader
 import com.puyodev.luka.screens.drawer.DrawerScreen
+import kotlinx.coroutines.delay
 //import com.example.makeitso.model.Task
 import kotlinx.coroutines.launch
 import kotlin.reflect.KFunction3
@@ -44,65 +45,15 @@ fun PayScreen(
 ) {
     // Observa un único objeto User en lugar de una lista
     val user by viewModel.user.collectAsStateWithLifecycle(initialValue = User())
-    val isLoading by viewModel.isLoading.collectAsState()
     val nfcStatus by viewModel.nfcStatus.collectAsState() // Añadido el estado NFC
     PayScreenContent(
         user = user,
         onProfileClick = viewModel::onProfileClick,
         onTicketClick = viewModel::onTicketClick,
+        onProfilePaymentGatewayClick = viewModel::onProfilePaymentGatewayClick,
         openScreen = openScreen,
-        isLoading = isLoading,
         nfcStatus = nfcStatus
     )
-}
-
-@Composable
-fun CustomBottomBar() {
-    BottomAppBar(
-        modifier = Modifier
-            .shadow(elevation = 10.dp)
-            .height(150.dp)
-
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(15.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween // Asegura que las columnas queden separadas
-        ) {
-            Column(
-                modifier = Modifier
-                    .weight(1f) // Cada columna ocupa el mismo ancho
-                    .padding(end = 8.dp) // Espacio opcional entre las columnas
-            ) {
-                Text(text = "Ubicación Actual:", fontSize = 15.sp)
-                Text(
-                    text = "Urb. Monterrey D-8, José Luis Bustamante y Rivero",
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .weight(0.45f) // Cada columna ocupa el mismo ancho
-                    .padding(start = 8.dp) // Espacio opcional entre las columnas
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(), // Hace que el Box ocupe todo el espacio de la columna
-                    contentAlignment = Alignment.Center // Centra la imagen dentro del Box
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.located),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(80.dp) // Tamaño personalizado para la imagen centrada
-                    )
-                }
-            }
-        }
-    }
 }
 
 @SuppressLint("SuspiciousIndentation")
@@ -110,16 +61,17 @@ fun CustomBottomBar() {
 fun PayScreenContent(
     user: User,
     onProfileClick: ((String) -> Unit) -> Unit,
+    onProfilePaymentGatewayClick: ((String) -> Unit) -> Unit,
     onTicketClick: KFunction3<(String) -> Unit, Int, String, Unit>,
     openScreen: (String) -> Unit,
-    isLoading: Boolean,
     nfcStatus: PayViewModel.NFCStatus
 ) {
     var valor by remember { mutableIntStateOf(1) } // Estado del contador
     val drawerState = rememberDrawerState(DrawerValue.Closed) // Estado para abrir/cerrar el drawer
     val scope = rememberCoroutineScope() // Alcance de la corrutina para manejar el drawer
 
-        ModalNavigationDrawer(
+
+    ModalNavigationDrawer(
             drawerState = drawerState, // Controla si el drawer está abierto o cerrado
             drawerContent = {
                 ModalDrawerSheet(
@@ -160,15 +112,56 @@ fun PayScreenContent(
                     ) {
                         OutlinedButton(
                             modifier = Modifier.width(160.dp),
-                            onClick = { /*TODO*/ }
+                            onClick = { onProfilePaymentGatewayClick(openScreen)}
                         ) {
-                            Text("Lukitas\nS/${user.lukitas}") // Muestra el monto de usuario
+                            Column {
+                                Text(
+                                    text = "Lukitas: ",
+                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp) // Espaciado entre el ícono y el texto
+                                ) {
+
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.lukita_coin),
+                                        contentDescription = "Lukitas Icono",
+                                        modifier = Modifier.size(20.dp),
+                                        tint = Color.Unspecified
+
+                                    )
+                                    Text(
+                                        text = "${user.lukitas}",
+                                    )
+                                }
+                            }
                         }
                         OutlinedButton(
                             modifier = Modifier.width(160.dp),
                             onClick = { /*TODO*/ }
                         ) {
-                            Text("Tarifa\nS/1.00")
+                            Column {
+                                Text(
+                                    text = "Tarifa: ",
+                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp) // Espaciado entre el ícono y el texto
+                                ) {
+
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.lukita_coin),
+                                        contentDescription = "Lukitas Icono",
+                                        modifier = Modifier.size(20.dp),
+                                        tint = Color.Unspecified
+
+                                    )
+                                    Text(
+                                        text = "1",
+                                        //text = "${user.lukitas}",
+                                    )
+                                }
+                            }
                         }
                     }
 
@@ -226,34 +219,27 @@ fun PayScreenContent(
                     ) {
                         when (nfcStatus) {
                             is PayViewModel.NFCStatus.Idle -> {
-                                if (isLoading) {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.padding(top = 40.dp),
-                                        color = MaterialTheme.colorScheme.primary
-                                    )
-                                } else {
-                                    ExtendedFloatingActionButton(
-                                        modifier = Modifier
-                                            .width(200.dp)
-                                            .padding(0.dp, 40.dp),
-                                        onClick = {
-                                            onTicketClick(
-                                                openScreen,
-                                                valor,
-                                                "Urb. Monterrey D-8, José Luis Bustamante y Rivero"
-                                            )
-                                        },
-                                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                        contentColor = MaterialTheme.colorScheme.primary,
-                                        icon = {
-                                            Icon(
-                                                Icons.Default.KeyboardArrowUp,
-                                                contentDescription = "Realizar pago"
-                                            )
-                                        },
-                                        text = { Text(text = "Pagar", fontSize = 20.sp) }
-                                    )
-                                }
+                                ExtendedFloatingActionButton(
+                                    modifier = Modifier
+                                        .width(200.dp)
+                                        .padding(0.dp, 40.dp),
+                                    onClick = {
+                                        onTicketClick(
+                                            openScreen,
+                                            valor,
+                                            "Urb. Monterrey D-8, José Luis Bustamante y Rivero"
+                                        )
+                                    },
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    contentColor = MaterialTheme.colorScheme.primary,
+                                    icon = {
+                                        Icon(
+                                            Icons.Default.KeyboardArrowUp,
+                                            contentDescription = "Realizar pago"
+                                        )
+                                    },
+                                    text = { Text(text = "Pagar", fontSize = 20.sp) }
+                                )
                             }
                             is PayViewModel.NFCStatus.WaitingForNFC -> {
                                 NFCWaitingIndicator()
@@ -262,14 +248,14 @@ fun PayScreenContent(
                                 // No mostrar nada, la navegación ocurrirá automáticamente
                             }
                             is PayViewModel.NFCStatus.Error -> {
-                                ErrorMessage(message = (nfcStatus as PayViewModel.NFCStatus.Error).message)
+                                ErrorMessage(message = nfcStatus.message)
                             }
                         }
                     }
                 }
             }
-        }
     }
+}
 
 @Composable
 fun NFCWaitingIndicator() {
@@ -293,6 +279,55 @@ fun ErrorMessage(message: String) {
         color = MaterialTheme.colorScheme.error,
         modifier = Modifier.padding(16.dp)
     )
+}
+
+@Composable
+fun CustomBottomBar() {
+    BottomAppBar(
+        modifier = Modifier
+            .shadow(elevation = 10.dp)
+            .height(150.dp)
+
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(15.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween // Asegura que las columnas queden separadas
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f) // Cada columna ocupa el mismo ancho
+                    .padding(end = 8.dp) // Espacio opcional entre las columnas
+            ) {
+                Text(text = "Ubicación Actual:", fontSize = 15.sp)
+                Text(
+                    text = "Urb. Monterrey D-8, José Luis Bustamante y Rivero",
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .weight(0.45f) // Cada columna ocupa el mismo ancho
+                    .padding(start = 8.dp) // Espacio opcional entre las columnas
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(), // Hace que el Box ocupe todo el espacio de la columna
+                    contentAlignment = Alignment.Center // Centra la imagen dentro del Box
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.located),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(80.dp) // Tamaño personalizado para la imagen centrada
+                    )
+                }
+            }
+        }
+    }
 }
 
 //enviar parametros a la vista ticketScreen

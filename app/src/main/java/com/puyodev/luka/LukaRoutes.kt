@@ -9,6 +9,7 @@ const val PROFILE_SCREEN = "ProfileScreen"
 const val PAYMENT_SCREEN = "PaymentGatewayScreen"
 const val TICKET_SCREEN = "TicketScreen"
 const val OPERATIONS_SCREEN = "OperationsScreen"
+//const val OPERATIONS_SCREEN = "OperationsScreen"
 
 const val OPERATION_ID = "operationId"
 const val OPERATION_ID_ARG = "?$OPERATION_ID={$OPERATION_ID}"

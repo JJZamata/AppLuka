@@ -43,7 +43,7 @@ class AccountServiceImpl @Inject constructor(private val auth: FirebaseAuth, pri
     // Crear el documento en Firestore con datos adicionales
     val userData = hashMapOf(
       "username" to name,
-      "lukitas" to 30.00 // Monto inicial
+      "lukitas" to 30 // Monto inicial
     )
     firestore.collection("usuarios").document(uid).set(userData).await()
 

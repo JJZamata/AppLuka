@@ -42,6 +42,11 @@
     <string name="delete_account_title">¿Vas a ELIMINAR TU CUENTA?</string>
     <string name="delete_account_description">Perderás todo tu crédito y tu cuenta será eliminada. Esta acción es irreversible.</string>
 
+    <!-- NFC -->
+    <string name="nfc_timeout">Tiempo excedido. Intente nuevamente.</string>
+    <string name="nfc_error">Error en el pago. Intente nuevamente</string>
+
+
     <!-- FCM -->
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <string name="request_notification_permission">Request permission</string>

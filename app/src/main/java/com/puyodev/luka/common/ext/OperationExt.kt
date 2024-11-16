@@ -18,12 +18,8 @@ package com.puyodev.luka.common.ext
 
 import com.puyodev.luka.model.Operation
 
-fun Operation?.hasCreatedDate(): Boolean {
-  return this?.createdDate.orEmpty().isNotBlank()
-}
-
-fun Operation?.hasCreatedTime(): Boolean {
-  return this?.createdTime.orEmpty().isNotBlank()
+fun Operation?.hasCreatedDateTime(): Boolean {
+  return this?.completedTimestamp != null
 }
 
 fun Operation?.hasFrom(): Boolean {
