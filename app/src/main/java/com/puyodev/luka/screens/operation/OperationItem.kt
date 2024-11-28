@@ -88,6 +88,9 @@ private fun getCreatedDateAndTime(operation: Operation): String {
         operation.completedTimestamp?.toDate()?.let { date ->
             stringBuilder.append("Operación realizada el: ")
             stringBuilder.append(dateFormat.format(date))
+        } ?: run {
+            // Caso donde completedTimestamp es null o vacío
+            stringBuilder.append("Operación fallida. En breve será eliminada del historial.")
         }
     }
 
