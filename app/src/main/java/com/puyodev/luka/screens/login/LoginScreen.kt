@@ -53,9 +53,17 @@ fun LoginScreenContent(
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
-    EmailField(uiState.email, onEmailChange, Modifier.fieldModifier())
-    PasswordField(uiState.password, onPasswordChange, Modifier.fieldModifier())
+    EmailField(
+      uiState.email,
+      onEmailChange,
+      Modifier.fieldModifier("email_field")
+    )
 
+    PasswordField(
+      uiState.password,
+      onPasswordChange,
+      Modifier.fieldModifier("password_field")
+    )
     BasicButton(AppText.sign_in, Modifier.basicButton()) { onSignInClick() }
 
     BasicTextButton(AppText.forgot_password, Modifier.textButton()) {

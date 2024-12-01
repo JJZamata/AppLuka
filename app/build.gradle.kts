@@ -1,13 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    //Procesamiento de anotaciones en Kotlin
-    id("com.google.devtools.ksp")
-    //inyeccion de dependencias
-    id("dagger.hilt.android.plugin")
-    // Agregar el plugin de Google Services
-    id("com.google.gms.google-services")
-    id("com.google.firebase.crashlytics")
+    id("com.google.devtools.ksp") // Para procesamiento de anotaciones
+    id("dagger.hilt.android.plugin") // Hilt para inyección de dependencias
+    id("com.google.gms.google-services") // Google Services
+    id("com.google.firebase.crashlytics") // Firebase Crashlytics
 }
 
 android {
@@ -29,7 +26,7 @@ android {
 
     buildTypes {
         debug {
-            // Este bloque se puede dejar vacío o personalizar según sea necesario
+            isDebuggable = true
         }
         release {
             isMinifyEnabled = false
@@ -39,19 +36,24 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
     buildFeatures {
         compose = true
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -60,6 +62,7 @@ android {
 }
 
 dependencies {
+    // AndroidX y Jetpack Compose
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -71,24 +74,8 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.common.ktx)
-    implementation(libs.androidx.material3.android)
-    implementation(libs.firebase.auth.ktx)
-    implementation(libs.firebase.config.ktx)
-    implementation(libs.androidx.runtime.livedata)
 
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
-    implementation(libs.androidx.navigation.compose.v274)//para la navegacion entre pantallas
-    implementation(libs.androidx.ui.text.google.fonts)
-    implementation(libs.firebase.firestore.ktx)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-
-
-    // Agregar Firebase BoM
+    // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-crashlytics")
@@ -98,17 +85,27 @@ dependencies {
     implementation("com.google.firebase:firebase-config")
     implementation("com.google.firebase:firebase-messaging")
 
-    // Agregar Firebase Analytics (u otros servicios de Firebase que desees)
-    implementation("com.google.firebase:firebase-analytics")
-
-    // Dependencias adicionales de Firebase que puedas necesitar
-
-    //inyeccion de dependencias - hilt
+    // Hilt para inyección de dependencias
     implementation("com.google.dagger:hilt-android:2.47")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-    //- compilador
+    implementation(libs.ui.text.google.fonts)
+    implementation(libs.androidx.appcompat)
     ksp("com.google.dagger:hilt-compiler:2.47")
 
-    //animacion confetti
+    // Pruebas unitarias y funcionales
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+
+    // Librerías adicionales
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.material3.android)
+    implementation(libs.firebase.firestore.ktx)
+
+    // Animaciones (Konfetti)
     implementation("nl.dionsegijn:konfetti-compose:2.0.4")
 }

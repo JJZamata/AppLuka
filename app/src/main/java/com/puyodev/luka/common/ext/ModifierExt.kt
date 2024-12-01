@@ -19,6 +19,9 @@ package com.puyodev.luka.common.ext
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 
 fun Modifier.textButton(): Modifier {
@@ -45,10 +48,16 @@ fun Modifier.dropdownSelector(): Modifier {
   return this.fillMaxWidth()
 }
 
-fun Modifier.fieldModifier(): Modifier {
-  return this.fillMaxWidth().padding(16.dp, 4.dp)
+fun Modifier.fieldModifier(testTag: String): Modifier {
+  return this
+    .fillMaxWidth()
+    .padding(16.dp, 4.dp)
+    .padding(horizontal = 16.dp)
+    .testTag(testTag)
+    .semantics {
+      contentDescription = testTag
+    }
 }
-
 fun Modifier.toolbarActions(): Modifier {
   return this.wrapContentSize(Alignment.TopEnd)
 }

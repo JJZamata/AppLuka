@@ -1,18 +1,27 @@
+package com.puyodev.luka.screens.operation_details
 
-package com.puyodev.luka.screens.ticket
-
-import android.net.Uri
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material.icons.outlined.Share
-import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SmallFloatingActionButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -22,89 +31,47 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.firebase.Timestamp
 import com.puyodev.luka.R
-import com.puyodev.luka.model.User
-import com.puyodev.luka.ui.theme.LukaTheme
-import nl.dionsegijn.konfetti.compose.KonfettiView
-import nl.dionsegijn.konfetti.core.Party
-import nl.dionsegijn.konfetti.core.Position
-import nl.dionsegijn.konfetti.core.emitter.Emitter
-import java.util.concurrent.TimeUnit
+import com.puyodev.luka.common.ext.hasCreatedDateTime
+import com.puyodev.luka.model.Operation
+import java.lang.StringBuilder
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
-fun TicketScreen(
-    valor: Int?,
-    direccion: String?,
+fun OperationDetailsScreen(
     openScreen: (String) -> Unit,
-    viewModel: TicketViewModel = hiltViewModel(),
+    viewModel: OperationDetailsViewModel = hiltViewModel()
 ) {
-    // Observa un único objeto User en lugar de una lista
-    val user by viewModel.user.collectAsStateWithLifecycle(initialValue = User())
+    val operation by viewModel.operation
     val context = LocalContext.current
     val view = LocalView.current
 
-    var showConfetti by remember { mutableStateOf(false) }
-
-    // Inicia la animación cuando se carga la pantalla
-    LaunchedEffect(Unit) {
-        showConfetti = true
-    }
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        // Mostrar confetti cuando showConfetti sea verdadero
-        if (showConfetti) {
-            KonfettiView(
-                modifier = Modifier.fillMaxSize().zIndex(1f),
-                parties = listOf(
-                    Party(
-                        speed = 0f,
-                        maxSpeed = 30f,
-                        damping = 0.9f,
-                        spread = 360,
-                        colors = listOf(0xfce18a, 0xff726d, 0xf4306d, 0xb48def),
-                        emitter = Emitter(duration = 3, timeUnit = TimeUnit.SECONDS).perSecond(50),
-                        position = Position.Relative(0.5, 0.20),
-                    )
-                )
-            )
-        }
-
-        // Tu pantalla de contenido
-        TicketScreenContent(
-            user = user,
-            valor = valor,
-            direccion = direccion,
-            onPayScreenClick = viewModel::onPayScreenClick,
-            onShareClick = {
-                val uri = viewModel.captureAndShareImage(view, context)
-                if (uri != null) {
-                    viewModel.shareImage(context, uri)
-                }
-            },
-            openScreen = openScreen
-        )
-    }
+    OperationDetailsScreenContent(
+        operation = operation,
+        onPayScreenClick = viewModel::onPayScreenClick,
+        onShareClick = {
+            val uri = viewModel.captureAndShareImage(view, context)
+            if (uri != null) {
+                viewModel.shareImage(context, uri)
+            }
+        },
+        openScreen = openScreen,
+    )
 }
 
 @Composable
-fun TicketScreenContent(
+fun OperationDetailsScreenContent(
     modifier: Modifier = Modifier,
-    user: User, // Añade este parámetro
-    valor: Int?,  // Recibe el parámetro valor
-    direccion: String?,  // Recibe el parámetro direccion
+    operation: Operation,
     onPayScreenClick: ((String) -> Unit) -> Unit,
     onShareClick: () -> Unit,
     openScreen: (String) -> Unit
-
 ) {
-    val fecha = "12/11/2024"
-
     Column(
         modifier = Modifier
             .background(
@@ -145,7 +112,8 @@ fun TicketScreenContent(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center // Centra el Box en la pantalla
                 ) {
-                    Text(text = fecha)
+                    Text(text = formatTimestamp(operation.completedTimestamp))
+
                 }
                 Row(
                     modifier = Modifier
@@ -178,7 +146,7 @@ fun TicketScreenContent(
 
                         ) {
                             Text(
-                                text = "Pago:\nS/$valor",
+                                text = "Pago:\nS/${operation.mount}",
                                 textAlign = TextAlign.Center
                             )
                         }
@@ -191,7 +159,7 @@ fun TicketScreenContent(
 
                         ) {
                             Text(
-                                text = "Paradero:\n$direccion",
+                                text = "Paradero:\n${operation.busStop}",
                                 textAlign = TextAlign.Center,
                                 fontSize = 15.sp
                             )
@@ -228,10 +196,10 @@ fun TicketScreenContent(
                 onClick = { onPayScreenClick(openScreen) },
                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
                 contentColor = MaterialTheme.colorScheme.surface,
-                        modifier = Modifier.shadow(
-                        elevation = 8.dp,
-                shape = MaterialTheme.shapes.small // Aplica sombra en la forma definida
-            )
+                modifier = Modifier.shadow(
+                    elevation = 8.dp,
+                    shape = MaterialTheme.shapes.small // Aplica sombra en la forma definida
+                )
             ) {
                 Icon(
                     Icons.Filled.Menu,
@@ -262,16 +230,10 @@ fun TicketScreenContent(
     }
 }
 
-
-
-@Preview(showBackground = true)
 @Composable
-fun TicketScreenPreview() {
-    LukaTheme {
-        TicketScreen(
-            valor = 5,  // Ejemplo de valor para "Pago"
-            direccion = "Av. Principal",  // Ejemplo de dirección o paradero
-            openScreen = {}  // Acción de navegación vacía para el Preview
-        )
-    }
+fun formatTimestamp(timestamp: Timestamp?): String {
+    if (timestamp == null) return "N/A"
+
+    val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+    return formatter.format(timestamp.toDate())
 }

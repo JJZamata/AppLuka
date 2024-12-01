@@ -1,8 +1,10 @@
 package com.puyodev.luka
 
+import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -22,12 +24,14 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.puyodev.luka.common.snackbar.SnackbarManager
 import com.puyodev.luka.screens.PaymentGateway.PaymentGatewayScreen
+import com.puyodev.luka.screens.info.InfoScreen
 //import com.puyodev.luka.screens.AppContent
 import com.puyodev.luka.screens.pay.PayScreen
 import com.puyodev.luka.screens.profile.ProfileScreen
 //import com.example.makeitso.screens.edit_task.EditTaskScreen
 import com.puyodev.luka.screens.login.LoginScreen
 import com.puyodev.luka.screens.operation.OperationsScreen
+import com.puyodev.luka.screens.operation_details.OperationDetailsScreen
 //import com.puyodev.luka.screens.settings.SettingsScreen
 import com.puyodev.luka.screens.sign_up.SignUpScreen
 import com.puyodev.luka.screens.splash.SplashScreen
@@ -40,6 +44,7 @@ import com.puyodev.luka.ui.theme.LukaTheme
 //import com.google.accompanist.permissions.shouldShowRationale
 import kotlinx.coroutines.CoroutineScope
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun LukaApp() {
@@ -63,11 +68,11 @@ fun LukaApp() {
                         }
                     )
                 },
-            ) { innerPaddingModifier ->
+            ){
                 NavHost(
                     navController = appState.navController,
                     startDestination = SPLASH_SCREEN,
-                    modifier = Modifier.padding(innerPaddingModifier)
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     lukaGraph(appState)
                 }
@@ -160,6 +165,10 @@ fun NavGraphBuilder.lukaGraph(appState: LukaAppState) {
         PayScreen(openScreen = { route -> appState.navigate(route) })
     }
 
+    composable(INFO_SCREEN){
+        InfoScreen(openScreen = { route -> appState.navigate(route) })
+    }
+
     composable(PAYMENT_SCREEN){
         PaymentGatewayScreen(openScreen = { route -> appState.navigate(route) })
     }
@@ -173,4 +182,16 @@ fun NavGraphBuilder.lukaGraph(appState: LukaAppState) {
 
     composable(OPERATIONS_SCREEN) { OperationsScreen(openScreen = { route -> appState.navigate(route) }) }
 
+    composable(
+        route = "$OPERATION_DETAILS_SCREEN/{$OPERATION_ID}",
+        arguments = listOf(navArgument(OPERATION_ID) {
+            nullable = true // Permite que el argumento sea opcional
+            defaultValue = null // Valor predeterminado cuando no se pasa
+        })
+    ) { backStackEntry ->
+        val operationId = backStackEntry.arguments?.getString(OPERATION_ID)
+        OperationDetailsScreen(
+            openScreen = { route -> appState.navigate(route) }
+        )
+    }
 }

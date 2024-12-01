@@ -28,13 +28,14 @@ import java.util.Locale
 @Composable
 fun OperationItem(
     operation: Operation,
-    //options: List<String>
+    onClick: (Operation) -> Unit // Agregar un manejador de clic
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp)
+            .clickable { onClick(operation) }, // Detecta clic y envía la operación
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Row(
@@ -66,17 +67,7 @@ fun OperationItem(
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
             )
-/*
-            if (task.flag) {
-                Icon(
-                    painter = painterResource(AppIcon.ic_flag),
-                    tint = DarkOrange,
-                    contentDescription = "Flag"
-                )
-            }
-*/
-            //DropdownContextMenu(options, Modifier.contextMenu(), onActionClick)
-        }
+         }
     }
 }
 

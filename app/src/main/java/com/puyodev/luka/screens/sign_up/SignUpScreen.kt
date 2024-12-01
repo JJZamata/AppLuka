@@ -62,7 +62,6 @@ fun SignUpScreenContent(
   onSignUpClick: () -> Unit,
   onLoginAccountClick: () -> Unit
 ) {
-  val fieldModifier = Modifier.fieldModifier()
 
   BasicToolbar(AppText.create_account)
 
@@ -74,10 +73,10 @@ fun SignUpScreenContent(
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
-    UsernameField(uiState.username, onUsernameChange, fieldModifier)
-    EmailField(uiState.email, onEmailChange, fieldModifier)
-    PasswordField(uiState.password, onPasswordChange, fieldModifier)
-    RepeatPasswordField(uiState.repeatPassword, onRepeatPasswordChange, fieldModifier)
+    UsernameField(uiState.username, onUsernameChange, Modifier.fieldModifier("new_username_field"))
+    EmailField(uiState.email, onEmailChange, Modifier.fieldModifier("new_email_field"))
+    PasswordField(uiState.password, onPasswordChange, Modifier.fieldModifier("new_password_field"))
+    RepeatPasswordField(uiState.repeatPassword, onRepeatPasswordChange, Modifier.fieldModifier("new_repassword_field"))
 
     BasicButton(AppText.create_account, Modifier.basicButton()) {
       onSignUpClick()

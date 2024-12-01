@@ -1,5 +1,6 @@
 package com.puyodev.luka.model.service.impl
 
+import android.util.Log
 import com.puyodev.luka.model.User
 import com.puyodev.luka.model.service.AccountService
 import com.puyodev.luka.model.service.StorageService
@@ -56,9 +57,27 @@ class StorageServiceImpl @Inject constructor(
         firestore.collection(OPERATION_COLLECTION).whereEqualTo(USER_ID_FIELD, user.id).dataObjects()
       }
 
-  override suspend fun getOperation(operationId: String): Operation? =
-    firestore.collection(OPERATION_COLLECTION).document(operationId).get().await().toObject()
+  override suspend fun getOperation(operationId: String): Operation? {
+    try {
+      val documentSnapshot = firestore.collection(OPERATION_COLLECTION)
+        .document(operationId)
+        .get()
+        .await()
 
+      Log.d("StorageService", "Si se existe: ${documentSnapshot.exists()}")
+      if (documentSnapshot.exists()) {
+        val operation = documentSnapshot.toObject(Operation::class.java)
+        Log.d("StorageService", "Operacion obtenida: $operation")
+        return operation
+      } else {
+        Log.e("StorageService", "No se encontro un documento con tal id: $operationId")
+        return null
+      }
+    } catch (e: Exception) {
+      Log.e("StorageService", "Error retrieving operation", e)
+      return null
+    }
+  }
   override suspend fun getOperationFlow(operationId: String): Flow<Operation> = callbackFlow {
     val subscription = firestore.collection(OPERATION_COLLECTION)
       .document(operationId)

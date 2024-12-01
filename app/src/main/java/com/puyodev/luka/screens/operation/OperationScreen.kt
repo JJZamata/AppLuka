@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.puyodev.luka.OPERATION_DETAILS_SCREEN
 import com.puyodev.luka.common.composable.ActionToolbar
 import com.puyodev.luka.common.ext.toolbarActions
 import com.puyodev.luka.model.Operation
@@ -87,10 +88,14 @@ fun OperationsScreenContent(
                 items(operations.value, key = { it.id }) { operationItem ->
                     OperationItem(
                         operation = operationItem,
-                        //options = listOf(),
+                        onClick = { selectedOperation ->
+                            openScreen("$OPERATION_DETAILS_SCREEN/${selectedOperation.id}")
+                        }
                     )
                 }
             }
         }
     }
 }
+
+
