@@ -81,7 +81,7 @@ fun SignUpScreenContent(
     BasicButton(AppText.create_account, Modifier.basicButton()) {
       onSignUpClick()
     }
-    BasicTextButton(AppText.start_to_create_account, Modifier.textButton()) {
+    BasicTextButton(AppText.start_to_login_account, Modifier.textButton()) {
       onLoginAccountClick()
     }
   }

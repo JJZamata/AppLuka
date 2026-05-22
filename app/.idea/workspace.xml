@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="5e5f0a28-aa6a-412b-bccf-5d66ae3cc404" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/puyodev/luka/LukaApp.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/puyodev/luka/LukaAppState.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/puyodev/luka/LukaRoutes.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/puyodev/luka/screens/Pay/PayScreen.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/puyodev/luka/screens/Pay/PayUiState.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/puyodev/luka/screens/Pay/PayViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/deploymentTargetSelector.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/puyodev/luka/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/puyodev/luka/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/puyodev/luka/navigation/AppNavigation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/puyodev/luka/navigation/AppNavigation.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/puyodev/luka/screens/splash/SplashScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/puyodev/luka/screens/splash/SplashScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/puyodev/luka/screens/splash/SplashViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/puyodev/luka/screens/splash/SplashViewModel.kt" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "Zamata"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Zamata/APPLuka.git",
+    "accountId": "887551cc-3f11-426f-bce2-35dc8cb545b7"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 6
+}]]></component>
+  <component name="ProjectId" id="2o0hUko9GTNzmHaSDyEIZiSMEij" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "android.gradle.sync.needed": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "DevelopmentAuthentication",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/PuyoDev/AndroidStudioProjects/Luka/app"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="5e5f0a28-aa6a-412b-bccf-5d66ae3cc404" name="Changes" comment="" />
+      <created>1730012418725</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1730012418725</updated>
+    </task>
+    <servers />
+  </component>
+</project>

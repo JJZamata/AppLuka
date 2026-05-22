@@ -108,4 +108,7 @@ dependencies {
 
     // Animaciones (Konfetti)
     implementation("nl.dionsegijn:konfetti-compose:2.0.4")
+
+    // PayPal Checkout SDK - TEMPORALMENTE DESHABILITADO PARA DEMO
+    // implementation("com.paypal.checkout:android-sdk:1.2.2")
 }

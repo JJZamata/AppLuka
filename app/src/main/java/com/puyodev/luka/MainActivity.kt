@@ -18,7 +18,13 @@ import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.util.Log
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.DisposableEffect
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.puyodev.luka.screens.PaymentGateway.PayPalConfig
 import com.puyodev.luka.screens.pay.PayViewModel
+import javax.inject.Inject
 
 // Agrega esta anotación
 @AndroidEntryPoint
@@ -45,8 +51,11 @@ class MainActivity : ComponentActivity()/*, NfcAdapter.ReaderCallback*/ {
 
         enableEdgeToEdge()
 
-        setContent { LukaApp() }
+        setContent {
+            LukaApp()
+        }
     }
+
 /*
     override fun onResume() {
         super.onResume()
