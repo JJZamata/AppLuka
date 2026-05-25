@@ -112,7 +112,7 @@ fun OperationDetailsScreenContent(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center // Centra el Box en la pantalla
                 ) {
-                    Text(text = formatTimestamp(operation.completedTimestamp))
+                    Text(text = formatTimestamp(operation.completedTimestamp), color = Color.Black)
 
                 }
                 Row(
@@ -131,7 +131,7 @@ fun OperationDetailsScreenContent(
                             modifier = Modifier
                                 .size(160.dp) // Tamaño personalizado para la imagen centrada
                         )
-                        Text(text = "Bus 101")
+                        Text(text = "Bus 101", color = Color.Black)
                     }
                     Column(
                         modifier = Modifier.padding(10.dp),
@@ -146,11 +146,12 @@ fun OperationDetailsScreenContent(
 
                         ) {
                             Text(
-                                text = "Pago:\nS/${operation.mount}",
-                                textAlign = TextAlign.Center
+                                text = "Pago:\nS/${String.format("%.2f", operation.mount.toDouble())}",
+                                textAlign = TextAlign.Center,
+                                color = Color.Black
                             )
                         }
-                        HorizontalDivider(modifier = Modifier.fillMaxWidth())
+                        HorizontalDivider(modifier = Modifier.fillMaxWidth(), color = Color.Gray)
                         Row(
                             modifier = Modifier
                                 .padding(10.dp)
@@ -161,7 +162,8 @@ fun OperationDetailsScreenContent(
                             Text(
                                 text = "Paradero:\n${operation.busStop}",
                                 textAlign = TextAlign.Center,
-                                fontSize = 15.sp
+                                fontSize = 15.sp,
+                                color = Color.Black
                             )
                         }
                     }
@@ -177,8 +179,7 @@ fun OperationDetailsScreenContent(
         ) {
             SmallFloatingActionButton(
                 onClick = onShareClick,
-                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                contentColor = MaterialTheme.colorScheme.surface,
+                containerColor = Color.White,
                 modifier = Modifier.shadow(
                     elevation = 8.dp,
                     shape = MaterialTheme.shapes.small // Aplica sombra en la forma definida
@@ -189,41 +190,42 @@ fun OperationDetailsScreenContent(
                     modifier = Modifier
                         .size(60.dp)
                         .padding(10.dp),
-                    contentDescription = "Compartir voucher Luka" // Add a valid content description
+                    contentDescription = "Compartir voucher Luka",
+                    tint = Color.Black
                 )
             }
             SmallFloatingActionButton(
                 onClick = { onPayScreenClick(openScreen) },
-                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                contentColor = MaterialTheme.colorScheme.surface,
                 modifier = Modifier.shadow(
                     elevation = 8.dp,
                     shape = MaterialTheme.shapes.small // Aplica sombra en la forma definida
-                )
+                ),
+                containerColor = Color.White
             ) {
                 Icon(
                     Icons.Filled.Menu,
                     modifier = Modifier
                         .size(60.dp)
                         .padding(10.dp),
-                    contentDescription = "Regresar a la pantalla principal" // Add a valid content description
+                    contentDescription = "Regresar a la pantalla principal",
+                    tint = Color.Black
                 )
             }
             SmallFloatingActionButton(
                 onClick = { onPayScreenClick(openScreen) },
-                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                contentColor = MaterialTheme.colorScheme.surface,
                 modifier = Modifier.shadow(
                     elevation = 8.dp,
                     shape = MaterialTheme.shapes.small // Aplica sombra en la forma definida
-                )
+                ),
+                containerColor = Color.White
             ) {
                 Icon(
                     Icons.Outlined.Place,
                     modifier = Modifier
                         .size(60.dp)
                         .padding(10.dp),
-                    contentDescription = "" // Add a valid content description
+                    contentDescription = "Ubicación",
+                    tint = Color.Black
                 )
             }
         }

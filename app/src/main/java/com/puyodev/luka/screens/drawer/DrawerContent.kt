@@ -1,9 +1,11 @@
 package com.puyodev.luka.screens.drawer
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,6 +16,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Email
@@ -72,22 +75,26 @@ fun DrawerHeader(user: String) {
             .padding(5.dp)
             .fillMaxWidth()
     ) {
-
-        Image(
-            painterResource(id = R.drawable.neko),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
+        // Avatar con icono de usuario por defecto
+        Box(
             modifier = Modifier
                 .size(100.dp)
                 .clip(CircleShape)
-        )
+                .background(MaterialTheme.colorScheme.primary),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = "Usuario",
+                tint = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.size(50.dp)
+            )
+        }
         Spacer(modifier = Modifier.padding(5.dp))
 
         Text(
             text = user,
             textAlign = TextAlign.Center,
-            //style = MaterialTheme.typography.bodyLarge,
-            //color = MaterialTheme.colorScheme.onPrimary,
         )
     }
 }

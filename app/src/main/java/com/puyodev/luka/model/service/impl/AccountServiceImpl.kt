@@ -26,7 +26,9 @@ class AccountServiceImpl @Inject constructor(private val auth: FirebaseAuth, pri
     get() = callbackFlow {
       val listener =
         FirebaseAuth.AuthStateListener { auth ->
-          this.trySend(auth.currentUser?.let { User(it.uid, it.isAnonymous.toString()) } ?: User())
+          this.trySend(auth.currentUser?.let {
+            User(id = it.uid, userId = it.uid, username = "", lukitas = 0)
+          } ?: User())
         }
       auth.addAuthStateListener(listener)
       awaitClose { auth.removeAuthStateListener(listener) }
@@ -42,8 +44,9 @@ class AccountServiceImpl @Inject constructor(private val auth: FirebaseAuth, pri
 
     // Crear el documento en Firestore con datos adicionales
     val userData = hashMapOf(
+      "userId" to uid,        // Campo necesario para las reglas de Firestore
       "username" to name,
-      "lukitas" to 30 // Monto inicial
+      "lukitas" to 200 // Monto inicial cambiado de 30 a 200
     )
     firestore.collection("usuarios").document(uid).set(userData).await()
 

@@ -4,12 +4,19 @@ import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -19,7 +26,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -103,10 +112,25 @@ fun PayScreenContent(
                         .fillMaxSize()
                         .padding(innerPadding)
                 ) {
+                    // Banner DEMO
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.tertiaryContainer)
+                            .padding(8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "⚠️ MODO DEMO - Pagos simulados",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer
+                        )
+                    }
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(15.dp)
+                            .padding(15.dp, 30.dp)
                             .align(Alignment.CenterHorizontally),
                         horizontalArrangement = Arrangement.SpaceEvenly // Distribuye los elementos de forma uniforme
                     ) {
@@ -128,7 +152,6 @@ fun PayScreenContent(
                                         contentDescription = "Lukitas Icono",
                                         modifier = Modifier.size(20.dp),
                                         tint = Color.Unspecified
-
                                     )
                                     Text(
                                         text = "${user.lukitas}",
@@ -154,7 +177,6 @@ fun PayScreenContent(
                                         contentDescription = "Lukitas Icono",
                                         modifier = Modifier.size(20.dp),
                                         tint = Color.Unspecified
-
                                     )
                                     Text(
                                         text = "1",
@@ -171,22 +193,55 @@ fun PayScreenContent(
                             .padding(0.dp, 20.dp),
                         contentAlignment = Alignment.Center
                     ) {
+                        // Estado para la animación de rebote (declarado fuera del Row)
+                        var scaleState by remember { mutableFloatStateOf(1f) }
+
+                        val animatedScale by animateFloatAsState(
+                            targetValue = scaleState,
+                            animationSpec = spring(
+                                dampingRatio = Spring.DampingRatioMediumBouncy,
+                                stiffness = Spring.StiffnessLow
+                            ),
+                            label = "bounce"
+                        )
+
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically // Centra verticalmente el contenido del Row
                         ) {
                             IconButton(onClick = {
-                                if (valor > 1) valor-- // Resta 1 si valor es mayor que 0 - límite 1
+                                if (valor > 1) {
+                                    valor-- // Resta 1 si valor es mayor que 0 - límite 1
+                                    // Activar animación de rebote
+                                    scaleState = 1.3f
+                                }
                             }) {
                                 Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "Minus")
                             }
-                            Text(text = "$valor", fontSize = 100.sp)
+
+                            Text(
+                                text = "$valor",
+                                fontSize = 100.sp,
+                                modifier = Modifier.scale(animatedScale)
+                            )
 
                             IconButton(onClick = {
-                                if (valor < 10) valor++ // Suma 1 si valor es menor a 10 - límite 10
+                                if (valor < 10) {
+                                    valor++ // Suma 1 si valor es menor a 10 - límite 10
+                                    // Activar animación de rebote
+                                    scaleState = 1.3f
+                                }
                             }) {
                                 Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "Plus")
+                            }
+                        }
+
+                        // Resetear la escala después de la animación
+                        LaunchedEffect(scaleState) {
+                            if (scaleState != 1f) {
+                                kotlinx.coroutines.delay(200)
+                                scaleState = 1f
                             }
                         }
                     }
@@ -202,14 +257,25 @@ fun PayScreenContent(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(valor) { // Repite la imagen tantas veces como el valor
-                            Image(
-                                painter = painterResource(id = R.drawable.person),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .aspectRatio(1f) // Mantiene el aspecto cuadrado
-                                    .clip(RoundedCornerShape(8.dp)) // Opcional: redondear las esquinas
-                                    .border(1.dp, Color.Gray) // Opcional: agregar un borde
-                            )
+                            Surface(
+                                shape = RoundedCornerShape(16.dp),
+                                border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
+                                tonalElevation = 2.dp,
+                                color = MaterialTheme.colorScheme.surface,
+                                modifier = Modifier.aspectRatio(1f)
+                            ) {
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.padding(4.dp)
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.person),
+                                        contentDescription = null,
+                                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                                        modifier = Modifier.fillMaxSize(0.7f)
+                                    )
+                                }
+                            }
                         }
                     }
 
@@ -266,8 +332,15 @@ fun NFCWaitingIndicator() {
         CircularProgressIndicator()
         Spacer(modifier = Modifier.height(8.dp))
         Text(
+            text = "MODO DEMO - Simulando lector NFC...",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
             text = "Acerque su teléfono al lector...",
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -321,6 +394,7 @@ fun CustomBottomBar() {
                     Image(
                         painter = painterResource(id = R.drawable.located),
                         contentDescription = null,
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                         modifier = Modifier
                             .size(80.dp) // Tamaño personalizado para la imagen centrada
                     )

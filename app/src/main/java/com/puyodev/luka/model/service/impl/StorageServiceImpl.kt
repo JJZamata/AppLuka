@@ -13,11 +13,13 @@ import com.puyodev.luka.model.Operation
 import com.puyodev.luka.model.PaymentOperation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import javax.inject.Inject
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import javax.inject.Inject
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.channels.awaitClose
@@ -37,17 +39,30 @@ class StorageServiceImpl @Inject constructor(
 
   @OptIn(ExperimentalCoroutinesApi::class)
   override val currentUserData: Flow<User>
-    get() = flow {
+    get() = callbackFlow {
       val userId = auth.currentUserId
       if (userId.isNotEmpty()) {
-        val documentSnapshot = firestore.collection(USER_COLLECTION)
+        val listener = firestore.collection(USER_COLLECTION)
           .document(userId)
-          .get()
-          .await()
-        val userData = documentSnapshot.toObject(User::class.java)
-        if (userData != null) {
-          emit(userData)
+          .addSnapshotListener { snapshot, error ->
+            if (error != null) {
+              Log.e("StorageService", "Error listening to user data: ${error.message}")
+              return@addSnapshotListener
+            }
+            val userData = snapshot?.toObject(User::class.java)
+            if (userData != null) {
+              trySend(userData)
+            } else {
+              // Si no hay datos, enviar un User vacío con el ID
+              trySend(User(id = userId, userId = userId, username = "", lukitas = 0))
+            }
+          }
+        awaitClose {
+          listener.remove()
         }
+      } else {
+        // Si no hay usuario autenticado, enviar User vacío
+        trySend(User())
       }
     }
 
@@ -56,6 +71,7 @@ class StorageServiceImpl @Inject constructor(
     get() = auth.currentUser.flatMapLatest { user ->
       firestore.collection(OPERATION_COLLECTION)
         .whereEqualTo(USER_ID_FIELD, user.id)
+        .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING) // Ordenar por timestamp descendente (más nuevas primero)
         .dataObjects()
     }
 

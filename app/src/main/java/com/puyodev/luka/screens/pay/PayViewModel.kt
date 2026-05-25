@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.puyodev.luka.OPERATION_ID
 import com.puyodev.luka.PROFILE_SCREEN
@@ -24,6 +25,7 @@ import com.puyodev.luka.PAYMENT_SCREEN
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.asStateFlow
 import com.puyodev.luka.common.snackbar.SnackbarManager
+import com.puyodev.luka.model.User
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeoutOrNull
@@ -76,41 +78,55 @@ class PayViewModel @Inject constructor(
             try {
                 _nfcStatus.value = NFCStatus.WaitingForNFC
 
-                // Crear nueva operación
+                // Obtener el usuario actual de forma síncrona
+                val currentUser = storageService.getUser(storageService.currentUserId)
+                val currentLukitas = currentUser?.lukitas ?: 0
+
+                if (currentLukitas < valor) {
+                    _nfcStatus.value = NFCStatus.Error("No tienes suficientes lukitas")
+                    SnackbarManager.showMessage(com.puyodev.luka.common.snackbar.SnackbarMessage.StringSnackbar("Saldo insuficiente"))
+                    delay(2000)
+                    _nfcStatus.value = NFCStatus.Idle
+                    return@launch
+                }
+
+                // Crear nueva operación con userId incluido
                 val newOperation = Operation(
                     from = "101",
                     mount = valor.toString(),
                     type = "Pago",
                     busStop = direccion,
-                    uid = "",  // Será llenado por el Raspberry Pi
+                    uid = "",  // Será llenado por simulación DEMO
+                    userId = storageService.currentUserId, // Incluir userId del usuario actual
                     timestamp = Timestamp.now(),
                     status = "pending"
-                    // completedTimestamp se llenará cuando el Raspberry Pi actualice la operación
                 )
 
                 // Guardar en Firestore
                 val operationId = storageService.save(newOperation)
 
-                // Observa cambios en la operación por 8 segundos
-                val timeoutMillis = 8000L // Tiempo de espera
-                val flow = storageService.getOperationFlow(operationId)
+                // MODO DEMO: Simular respuesta del lector NFC después de 3 segundos
+                delay(3000L)
 
-                withTimeoutOrNull(timeoutMillis) {
-                    flow.collect { operation ->
-                        if (operation.uid.isNotEmpty()) {
-                            _nfcStatus.value = NFCStatus.Success
-                            val route = "$TICKET_SCREEN/$valor/$direccion"
-                            openScreen(route)
-                            return@collect
-                        }
-                    }
-                }
+                // Obtener la operación y actualizarla con uid falso de DEMO
+                val updatedOperation = newOperation.copy(
+                    id = operationId,
+                    uid = "DEMO-READER-${System.currentTimeMillis()}",
+                    status = "completed",
+                    completedTimestamp = Timestamp.now() // Establecer timestamp de completado
+                )
+                storageService.update(updatedOperation)
 
-                // Si el tiempo se agota sin éxito, muestra error
-                if (_nfcStatus.value != NFCStatus.Success) {
-                    _nfcStatus.value = NFCStatus.Error("No se detectó respuesta del lector NFC.")
-                    SnackbarManager.showMessage(AppText.nfc_timeout)
-                }
+                // Restar lukitas al usuario
+                val newLukitas = currentLukitas - valor
+                storageService.updateUserLukitas(storageService.currentUserId, newLukitas)
+
+                // Esperar un momento más para que se actualice
+                delay(500L)
+
+                _nfcStatus.value = NFCStatus.Success
+                val route = "$TICKET_SCREEN/$valor/$direccion" // Volver al formato original
+                openScreen(route)
 
             } catch (e: Exception) {
                 // Maneja cualquier error inesperado
@@ -118,9 +134,9 @@ class PayViewModel @Inject constructor(
                 SnackbarManager.showMessage(AppText.nfc_error)
                 Log.e("NFC_ERROR", "${AppText.nfc_error} Error: ${e.message}")
             } finally {
-            delay(2000) // Espera 3 segundos para mostrar el mensaje
-            _nfcStatus.value = NFCStatus.Idle // Restablecer estado
-        }
+                delay(2000)
+                _nfcStatus.value = NFCStatus.Idle
+            }
         }
     }
 }

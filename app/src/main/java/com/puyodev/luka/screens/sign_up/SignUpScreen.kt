@@ -16,14 +16,20 @@ limitations under the License.
 
 package com.puyodev.luka.screens.sign_up
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.puyodev.luka.R
 import com.puyodev.luka.screens.sign_up.SignUpViewModel
 import com.puyodev.luka.R.string as AppText
 import com.puyodev.luka.common.composable.*
@@ -73,6 +79,16 @@ fun SignUpScreenContent(
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
+    // Logo
+    Image(
+      painter = painterResource(R.drawable.logo_luka),
+      contentDescription = "Luka Logo",
+      colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+      modifier = Modifier
+        .width(300.dp)
+        .height(300.dp)
+        .padding(bottom = 32.dp)
+    )
     UsernameField(uiState.username, onUsernameChange, Modifier.fieldModifier("new_username_field"))
     EmailField(uiState.email, onEmailChange, Modifier.fieldModifier("new_email_field"))
     PasswordField(uiState.password, onPasswordChange, Modifier.fieldModifier("new_password_field"))

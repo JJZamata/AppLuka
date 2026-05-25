@@ -367,7 +367,7 @@ fun PaymentGatewayScreenContent(
                             .padding(bottom = 8.dp)
                     )
                     Image(
-                        painter = painterResource(id = R.drawable.bus),
+                        painter = painterResource(id = R.drawable.anuncio),
                         contentDescription = "Promoción de reciclaje",
                         modifier = Modifier
                             .fillMaxWidth()

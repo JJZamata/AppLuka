@@ -57,7 +57,7 @@ fun OperationItem(
                 )
             }
             Text(
-                text = operation.mount,
+                text = "S/${String.format("%.2f", operation.mount.toDouble())}",  // Formato S/ con decimales
                 style = MaterialTheme.typography.bodyMedium,
                 color = if (operation.type=="Recarga") {
                     Color(0xFF4CAF50) // Verde para recargas
@@ -91,12 +91,10 @@ private fun getCreatedDateAndTime(operation: Operation): String {
 private fun getCreatedTypeAndTitle(operation: Operation): String {
     val stringBuilder = StringBuilder("")
 
-    if (operation.hasType()) {
-        stringBuilder.append(operation.type)
-        stringBuilder.append(" ")
-    }
-
     if (operation.hasFrom()) {
+        // Mostrar "Bus" en lugar del tipo de operación
+        stringBuilder.append("Bus")
+        stringBuilder.append(" ")
         stringBuilder.append(": ")
         stringBuilder.append(operation.from)
     }

@@ -1,14 +1,20 @@
 package com.puyodev.luka.screens.login
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.puyodev.luka.R
 import com.puyodev.luka.R.string as AppText
 import com.puyodev.luka.common.composable.*
 import com.puyodev.luka.common.ext.basicButton
@@ -53,6 +59,16 @@ fun LoginScreenContent(
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
+    // Logo
+    Image(
+      painter = painterResource(R.drawable.logo_luka),
+      contentDescription = "Luka Logo",
+      colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+      modifier = Modifier
+        .width(300.dp)
+        .height(300.dp)
+        .padding(bottom = 32.dp)
+    )
     EmailField(
       uiState.email,
       onEmailChange,
